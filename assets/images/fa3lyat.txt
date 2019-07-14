@@ -1,0 +1,19 @@
+
+base color
+
+black blue  >> 121320
+baby blue   >> 0fd1fa
+pink        >> e51d6f
+
+......................
+
+font >> cairo font
+
+......................
+
+color fonts 
+white      >> fffff
+light gray >> bbbcbd 
+bold gray  >> 6d6c72
+red        >> e95050
+black      >> 2b2b2b
