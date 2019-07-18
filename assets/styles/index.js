@@ -365,7 +365,8 @@ const styles = ({
         flex:1,
         marginBottom: 15,
         width:'100%',
-        height: 30
+        flexDirection:'row',
+        justifyContent : 'flex-start',
     },
     eventCont : {
         flex:1,

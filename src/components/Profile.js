@@ -4,6 +4,8 @@ import {Container, Content, Button, Footer, Icon, Header, Left, Form, Item, Pick
 import FooterSection from './Footer';
 import Styles from '../../assets/styles'
 import i18n from "../../local/i18n";
+import {connect} from "react-redux";
+import {updateProfile} from "../actions";
 // import axios from 'axios'
 // import CONST from '../consts'
 // import { Bars } from 'react-native-loader';
@@ -15,9 +17,9 @@ class Profile extends Component {
         super(props);
 
         this.state={
-            name: 'اماني',
-            phone: '01023456987',
-            mail: 'amany@gmail.com',
+            name: this.props.user.name,
+            phone: this.props.user.phone,
+            mail: this.props.user.email,
             nameStatus:0,
             phoneStatus: 0,
             mailStatus: 0,
@@ -68,7 +70,7 @@ class Profile extends Component {
                 </Header>
                 <Content style={Styles.homecontent}>
                     <View style={[Styles.eventswiper ,  {backgroundColor:'#121320' , height:400}]}>
-                        <Image source={require('../../assets/images/profile_pic.png')} style={Styles.eventswiper} resizeMode={'cover'} />
+                        <Image source={{uri:this.props.user.avatar}} style={[Styles.eventswiper , {height:400}]} resizeMode={'cover'} />
 
                     </View>
 
@@ -104,5 +106,11 @@ class Profile extends Component {
         );
     }
 }
+const mapStateToProps = ({ profile, lang }) => {
+    return {
+        user: profile.user,
+        lang: lang.lang
+    };
+};
 
-export default Profile;
+export default connect(mapStateToProps)(Profile);

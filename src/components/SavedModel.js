@@ -20,14 +20,7 @@ import CONST from "../consts";
 import {connect} from "react-redux";
 
 const height = Dimensions.get('window').height;
-// const savedItems=[
-//     {id:1 , name:'حفلة عمر خيرت' , image:require('../../assets/images/pic_two.png') , date:'15 مايو'},
-//     {id:2 , name:'حفلة عمر خيرت' , image:require('../../assets/images/pic_three.png'), date:'15 مايو'},
-//     {id:1 , name:'حفلة عمر خيرت' , image:require('../../assets/images/pic_six.png'), date:'15 مايو'},
-//     {id:1 , name:'حفلة عمر خيرت' , image:require('../../assets/images/pic_two.png') , date:'15 مايو'},
-//     {id:2 , name:'حفلة عمر خيرت' , image:require('../../assets/images/pic_three.png'), date:'15 مايو'},
-//     {id:1 , name:'حفلة عمر خيرت' , image:require('../../assets/images/pic_six.png'), date:'15 مايو'},
-// ]
+
 
 
 class SavedModel extends Component {

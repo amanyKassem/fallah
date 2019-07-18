@@ -11,11 +11,6 @@ import {connect} from "react-redux";
 import {DoubleBounce} from "react-native-loader";
 
 const height = Dimensions.get('window').height;
-const searchItems=[
-    {id:1 , name: i18n.t('proposedEvents')  , image:require('../../assets/images/suggestion_events.png')},
-    {id:2 , name: i18n.t('commonEvents'), image:require('../../assets/images/most_seen_events.png')},
-    {id:1 , name: i18n.t('favoriteEvents') , image:require('../../assets/images/fav_events.png')},
-]
 
 
 class SearchModal extends Component {
@@ -24,7 +19,6 @@ class SearchModal extends Component {
 
         this.state={
             visibleModal:false,
-            searchItems,
             status:null,
             searchResult:[],
             loader:false
@@ -37,18 +31,7 @@ class SearchModal extends Component {
         this.setState({visibleModal:nextProps.isModalVisible})
     }
 
-    _keyExtractor = (item, index) => item.id;
 
-    renderItems = (item) => {
-        return(
-            <TouchableOpacity onPress={() => this.props.navigation.navigate('category', { id: item.id } , this.setState({visibleModal:this.state.isModalVisible}))}  style={Styles.eventTouch}>
-                <View style={Styles.eventCont}>
-                    <Image source={item.image} resizeMode={'cover'} style={Styles.eventImg}/>
-                    <Text style={Styles.eventName}>{item.name}</Text>
-                </View>
-            </TouchableOpacity>
-        );
-    }
 
     search(search){
         axios({
@@ -70,27 +53,23 @@ class SearchModal extends Component {
         }
         else{
             this.state.searchResult.map((event , i) => {
-                console.log(i)
                 return(
-                    <TouchableOpacity onPress={() => this.props.navigation.navigate('eventDetails', this.setState({visibleModal:this.state.isModalVisible}))}  style={Styles.eventTouch}>
+                    <TouchableOpacity key={i} onPress={() => this.props.navigation.navigate('eventDetails', { id: event.id  , name:event.title} , this.setState({visibleModal:this.state.isModalVisible}))}  style={Styles.eventTouch}>
                         <View style={Styles.eventCont}>
-                            <Image source={{uri : 'dddd'}} resizeMode={'cover'} style={Styles.eventImg}/>
-                            <Text style={Styles.eventName}>sdssd</Text>
+                            <Image source={{uri :event.image}} resizeMode={'cover'} style={Styles.eventImg}/>
+                            <Text style={Styles.eventName}>{event.title}</Text>
                         </View>
                     </TouchableOpacity>
                 )
             })
 
         }
-
-
     }
-
 
     render() {
         return (
             <Modal avoidKeyboard={true} coverScreen={false} style={{}} deviceHeight={height-140} isVisible={this.state.visibleModal} onBackdropPress={() => this.setState({ visibleModal: this.props.footer_searchModal('home') })}>
-                <View style={[Styles.searchModal, { height: height-200 }]}>
+                <View style={[Styles.searchModal ]}>
                     <View style={Styles.viewLine}></View>
                     <View style={Styles.inputView}>
                         <Item  style={Styles.inputItem} bordered>
@@ -98,17 +77,29 @@ class SearchModal extends Component {
                         </Item>
                         <Image source={require('../../assets/images/gray_search.png')} style={Styles.searchImg} resizeMode={'contain'}/>
                     </View>
-                    <ScrollView style={{flex:1 , width:'100%', backgroundColor: '#000'}}>
-                        { this.renderSearchResult() }
-                    </ScrollView>
+                    {/*<ScrollView style={{flex:1 , width:'100%' }}>*/}
+                        {/*{this.renderSearchResult()}*/}
+                    {/*</ScrollView>*/}
                     <View style={Styles.modalLine}></View>
 
-                    <FlatList
-                        data={this.state.searchItems}
-                        renderItem={({item}) => this.renderItems(item)}
-                        numColumns={1}
-                        keyExtractor={this._keyExtractor}
-                    />
+                    <TouchableOpacity onPress={() => this.props.navigation.navigate('suggestedEvent', this.setState({visibleModal:this.state.isModalVisible}))}  style={Styles.eventTouch}>
+                        <View style={Styles.eventCont}>
+                            <Image source={require('../../assets/images/suggestion_events.png')} resizeMode={'cover'} style={Styles.eventImg}/>
+                            <Text style={Styles.eventName}>{i18n.t('proposedEvents')}</Text>
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => this.props.navigation.navigate('commonEvent' , this.setState({visibleModal:this.state.isModalVisible}))}  style={Styles.eventTouch}>
+                        <View style={Styles.eventCont}>
+                            <Image source={require('../../assets/images/most_seen_events.png')} resizeMode={'cover'} style={Styles.eventImg}/>
+                            <Text style={Styles.eventName}>{i18n.t('commonEvents')}</Text>
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => this.props.navigation.navigate('savedEvent' , this.setState({visibleModal:this.state.isModalVisible}))}  style={Styles.eventTouch}>
+                        <View style={Styles.eventCont}>
+                            <Image source={require('../../assets/images/fav_events.png')} resizeMode={'cover'} style={Styles.eventImg}/>
+                            <Text style={Styles.eventName}>{i18n.t('favoriteEvents')}</Text>
+                        </View>
+                    </TouchableOpacity>
 
                 </View>
             </Modal>

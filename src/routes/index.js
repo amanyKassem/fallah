@@ -25,6 +25,9 @@ import ShareApp from "../components/ShareApp";
 import Profile from "../components/Profile";
 import EditProfile from "../components/EditProfile";
 import Intro from "../components/Intro";
+import SuggestedEvent from "../components/SuggestedEvent";
+import CommonEvent from "../components/CommonEvent";
+import SavedEvent from "../components/SavedEvent";
 import RNParallax from "../components/RNParallax";
 
 const drawerCust = (props) => (<DrawerCustomization {...props} />)
@@ -44,6 +47,9 @@ const DrawerNavigator = createDrawerNavigator({
     eventDetails:EventDetails,
     getTicket:GetTicket,
     profile:Profile,
+    suggestedEvent:SuggestedEvent,
+    commonEvent:CommonEvent,
+    savedEvent:SavedEvent,
 
 },{
     initialRouteName:'home',
@@ -70,9 +76,32 @@ const AppNavigator = createStackNavigator({
     //         header: null
     //     }
     // },
-
+    editProfile: {
+        screen: EditProfile,
+        navigationOptions: {
+            header: null
+        }
+    },
     drawerNavigator: {
         screen: DrawerNavigator,
+        navigationOptions: {
+            header: null
+        }
+    },
+    suggestedEvent: {
+        screen: SuggestedEvent,
+        navigationOptions: {
+            header: null
+        }
+    },
+    savedEvent: {
+        screen: SavedEvent,
+        navigationOptions: {
+            header: null
+        }
+    },
+    commonEvent: {
+        screen: CommonEvent,
         navigationOptions: {
             header: null
         }
@@ -85,12 +114,7 @@ const AppNavigator = createStackNavigator({
         }
     },
 
-    editProfile: {
-        screen: EditProfile,
-        navigationOptions: {
-            header: null
-        }
-    },
+
 
     profile: {
         screen: Profile,
