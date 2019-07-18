@@ -8,7 +8,7 @@ import reducers from '../reducers';
 const persistsConfig = {
     key: 'root',
     storage: AsyncStorage,
-    // whiltelist: ['auth', 'logout', 'profile']
+    whiltelist: ['auth', 'logout', 'profile']
 };
 
 const persistedReducer = persistReducer(persistsConfig, reducers);

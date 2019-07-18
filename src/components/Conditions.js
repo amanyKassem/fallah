@@ -43,7 +43,7 @@ class Conditions extends Component {
     renderLoader(){
         if (this.state.status === null){
             return(
-                <View style={{ alignItems: 'center', justifyContent: 'center', height: height + 100, alignSelf:'center' , backgroundColor:'#fff' }}>
+                <View style={{ alignItems: 'center', justifyContent: 'center', height: height + 100, alignSelf:'center' , backgroundColor:'#fff' , width:'100%' }}>
                     <DoubleBounce size={20} color="#0fd1fa" />
                 </View>
             );

@@ -1,11 +1,13 @@
 import React from 'react';
-import { StyleSheet, Text, View , I18nManager } from 'react-native';
+import { StyleSheet, Text, View , I18nManager , AsyncStorage} from 'react-native';
 import { Root } from "native-base";
 import AppNavigator from './src/routes';
 import {Font} from "expo";
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { store, persistedStore } from './src/store';
+import './ReactotronConfig';
+
 
 // export default function App() {
 export default class App extends React.Component {
@@ -22,6 +24,7 @@ export default class App extends React.Component {
   componentWillMount() {
     I18nManager.forceRTL(true);
     console.log("mmmm",I18nManager.isRTL);
+    // AsyncStorage.clear();
   }
 
 

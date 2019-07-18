@@ -5,29 +5,26 @@ import Modal from "react-native-modal";
 import Styles from '../../assets/styles';
 import DateTimePicker from "react-native-modal-datetime-picker";
 import i18n from "../../local/i18n";
-// import axios from 'axios'
-// import CONST from '../consts'
-// import { Bars } from 'react-native-loader';
+import axios from "axios";
+import CONST from "../consts";
+import {NavigationEvents} from "react-navigation";
+import {DoubleBounce} from "react-native-loader";
+import {connect} from "react-redux";
 
 const height = Dimensions.get('window').height;
 const width = Dimensions.get('window').width;
 
-const events=[
-    {id:1 , name:'حفلة عمر خيرت' , date :'22/5/2019' , time : '10 مساءا' , price :'500' ,  image:require('../../assets/images/singer_pic.png')},
-    {id:1 , name:'حفلة عمر خيرت' , date :'22/5/2019' , time : '10 مساءا' , price :'500' ,  image:require('../../assets/images/singer_pic.png')},
-    {id:1 , name:'حفلة عمر خيرت' , date :'22/5/2019' , time : '10 مساءا' , price :'500' ,  image:require('../../assets/images/singer_pic.png')},
-    {id:1 , name:'حفلة عمر خيرت' , date :'22/5/2019' , time : '10 مساءا' , price :'500' ,  image:require('../../assets/images/singer_pic.png')},
-    {id:1 , name:'حفلة عمر خيرت' , date :'22/5/2019' , time : '10 مساءا' , price :'500' ,  image:require('../../assets/images/singer_pic.png')},
-]
+
 class Category extends Component {
     constructor(props){
         super(props);
 
         this.state={
-            events,
+            events:[],
             isModalVisible: false,
             countries: [],
-            selectedCountry: null,
+            selectedCity: null,
+            selectedOrganizations: undefined,
             location: '',
             date: '',
             time: '',
@@ -36,13 +33,39 @@ class Category extends Component {
             timeStatus:0,
             value: null,
             isDatePickerVisible: false,
-            isTimePickerVisible: false
+            isTimePickerVisible: false,
+            category:[],
+            status:null,
+            cities:[],
+            organizations:[]
         }
     }
 
     static navigationOptions = () => ({
         drawerLabel: () => null
     });
+
+    componentWillMount(){
+        const categoryId = this.props.navigation.state.params.id;
+        axios({
+            url: CONST.url + 'category_events',
+            method: 'POST',
+            data: {category_id: categoryId , lang: this.props.lang}
+        }).then(response => {
+            this.setState({
+                category: response.data.data.category,
+                events: response.data.data.events,
+                status: response.data.status,
+            })
+        })
+
+        axios.post(CONST.url + 'cities', { lang: this.props.lang }).then(response => {
+            this.setState({ cities: response.data.data , status: response.data.status,})
+        });
+        axios.post(CONST.url + 'organizations', { lang: this.props.lang }).then(response => {
+            this.setState({ organizations: response.data.data , status: response.data.status, })
+        });
+    }
 
     showDatePicker = () => {
         this.setState({ isDatePickerVisible: true });
@@ -54,8 +77,8 @@ class Category extends Component {
 
     handleDatePicked = date => {
         console.log("A date has been picked: ", date);
-        let formatted_date = date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear()
-        this.setState({ date : formatted_date })
+        let formatted_date = date.getFullYear() + "-" + ("0"+(date.getMonth() + 1)).slice(-2) + "-" + ("0" +date.getDate()).slice(-2);
+        this.setState({ date : formatted_date });
 
         this.hideDatePicker();
     };
@@ -127,17 +150,33 @@ class Category extends Component {
         this.setState({ isModalVisible: !this.state.isModalVisible });
     };
 
+    filter = () => {
+        this.setState({ status: null });
+        const categoryId = this.props.navigation.state.params.id;
+        axios({
+            url: CONST.url + 'events_filter',
+            method: 'POST',
+            data: {category_id: categoryId , lang: this.props.lang ,city_id:this.state.selectedCity , org_id : this.state.selectedOrganizations , date: this.state.date , price : this.state.value}
+        }).then(response => {
+            this.setState({
+                events: response.data.data,
+                status: response.data.status,
+            })
+        })
+        this.setState({ isModalVisible: !this.state.isModalVisible });
+    };
+
     _keyExtractor = (item, index) => item.id;
 
     renderItems = (item) => {
         return(
-            <TouchableOpacity onPress={() => this.props.navigation.navigate('eventDetails', { id: item.id })} style={Styles.eventTouch}>
+            <TouchableOpacity onPress={() => this.props.navigation.navigate('eventDetails', { id: item.id , name :item.title })} style={Styles.eventTouch}>
                 <View style={Styles.eventContent}>
                     <Right style={Styles.eventRight}>
-                        <Image source={item.image} resizeMode={'cover'} style={Styles.categoryImg}/>
+                        <Image source={{ uri: item.image }} resizeMode={'cover'} style={Styles.categoryImg}/>
                     </Right>
                     <Left style={Styles.eventLeft}>
-                        <Text style={Styles.eventboldName}>{item.name}</Text>
+                        <Text style={Styles.eventboldName}>{item.title}</Text>
                         <View style={Styles.imgText}>
                             <Image source={require('../../assets/images/gray_clock.png')} style={Styles.leftImg} resizeMode={'contain'} />
                             <Text style={Styles.eventText}>{item.time}</Text>
@@ -147,15 +186,32 @@ class Category extends Component {
                                 <Image source={require('../../assets/images/gray_calender.png')} style={Styles.leftImg} resizeMode={'contain'} />
                                 <Text style={Styles.eventText}>{item.date}</Text>
                             </View>
-                            <Text style={[Styles.eventText , {color:'#e51d6f'}]}>{item.price} { i18n.t('RS') }</Text>
+                            <Text style={[Styles.eventText , {color:'#e51d6f'}]}>{item.price}</Text>
                         </View>
                     </Left>
                 </View>
             </TouchableOpacity>
         );
     }
+    renderLoader(){
+        if (this.state.status === null){
+            return(
+                <View style={{ alignItems: 'center', justifyContent: 'center', height: height + 100, alignSelf:'center' , backgroundColor:'#fff' , width:'100%' }}>
+                    <DoubleBounce size={20} color="#0fd1fa" />
+                </View>
+            );
+        }
+    }
+
+    onFocus(payload){
+        console.log('this is onWillFocus', payload)
+        this.setState({ status: null });
+
+        this.componentWillMount()
+    }
 
     render() {
+        const categoryName = this.props.navigation.state.params.name;
         return (
 
             <Container style={Styles.container}>
@@ -166,7 +222,7 @@ class Category extends Component {
                         </Button>
                     </Right>
                     <Body style={Styles.bodyHeadrt}>
-                        <Text style={{ color: '#fff', textAlign: 'center', fontSize: 20 , fontFamily:'RegularFont' }}>فن</Text>
+                        <Text style={{ color: '#fff', textAlign: 'center', fontSize: 20 , fontFamily:'RegularFont' }}>{ categoryName }</Text>
                     </Body>
                     <Left style={Styles.leftHeader}>
                         <Button transparent onPress={this.toggleModal}>
@@ -174,10 +230,12 @@ class Category extends Component {
                         </Button>
                     </Left>
                 </Header>
+                <NavigationEvents onWillFocus={payload => this.onFocus(payload)} />
                 <Content style={Styles.content}>
+                    { this.renderLoader() }
                     <View style={Styles.parentView}>
                         <View style={Styles.viewLine}></View>
-                        <Image source={require('../../assets/images/art_icon.png')} style={Styles.headphone} resizeMode={'contain'} />
+                        <Image source={{ uri: this.state.category.icon }}  style={Styles.headphone} resizeMode={'contain'} />
                         <FlatList
                             data={this.state.events}
                             renderItem={({item}) => this.renderItems(item)}
@@ -196,16 +254,43 @@ class Category extends Component {
                                             // iosIcon={<Icon name="arrow-down" />}
                                             style={Styles.picker}
                                             placeholderStyle={{ color: "#acabae" }}
+                                            placeholder={i18n.t('city')}
                                             placeholderIconColor="#acabae"
                                             textStyle={{ color: "#acabae" , right:Platform.OS === 'ios' ?width-115:0 , fontSize:13 }}
                                             itemTextStyle={{ color: '#acabae' }}
-                                            selectedValue={this.state.selectedCountry}
-                                            onValueChange={(value) => this.setState({ selectedCountry: value })}
+                                            selectedValue={this.state.selectedCity}
+                                            onValueChange={(value) => this.setState({ selectedCity: value })}
                                         >
                                             <Picker.Item label={ i18n.t('city') } value={null} />
-                                            <Picker.Item label={'الرياض'} value={"1"} />
-                                            <Picker.Item label={'الامارات'} value={"2"} />
-                                            <Picker.Item label={'مصر'} value={"3"} />
+                                            {
+                                                this.state.cities.map((city, i) => (
+                                                    <Picker.Item key={i} label={city.name} value={city.id} />
+                                                ))
+                                            }
+                                        </Picker>
+                                        <Image source={require('../../assets/images/gray_dropdown.png')} style={[Styles.pickerImg , {right:Platform.OS === 'ios' ?50:10}]} resizeMode={'contain'} />
+                                    </Item>
+                                </View>
+                                <View>
+                                    <Item style={Styles.itemPicker} regular >
+                                        <Picker
+                                            mode="dropdown"
+                                            // iosIcon={<Icon name="arrow-down" />}
+                                            style={Styles.picker}
+                                            placeholder={i18n.t('organizations')}
+                                            placeholderStyle={{ color: "#acabae" }}
+                                            placeholderIconColor="#acabae"
+                                            textStyle={{ color: "#acabae" , right:Platform.OS === 'ios' ?width-115:0 , fontSize:13 }}
+                                            itemTextStyle={{ color: '#acabae' }}
+                                            selectedValue={this.state.selectedOrganizations}
+                                            onValueChange={(value) => this.setState({ selectedOrganizations: value })}
+                                        >
+                                            <Picker.Item label={ i18n.t('organizations') } value={null} />
+                                            {
+                                                this.state.organizations.map((org, i) => (
+                                                    <Picker.Item key={i} label={org.name} value={org.id} />
+                                                ))
+                                            }
                                         </Picker>
                                         <Image source={require('../../assets/images/gray_dropdown.png')} style={[Styles.pickerImg , {right:Platform.OS === 'ios' ?50:10}]} resizeMode={'contain'} />
                                     </Item>
@@ -230,19 +315,19 @@ class Category extends Component {
                                         mode={'date'}
                                     />
                                 </View>
-                                <View style={[Styles.inputParent , {borderColor: this.state.timeStatus === 1 ? '#0fd1fa' : '#acabae'}]}>
-                                    <Item floatingLabel style={Styles.item} bordered onPress={this.showTimePicker}>
-                                        <Label style={[Styles.labelItem , {color:this.state.timeStatus === 1 ? '#0fd1fa': '#acabae', top:-13}]}>{ i18n.t('time') }</Label>
-                                        <Input disabled value={this.state.time.toString()} auto-capitalization={false} onBlur={() => this.unActiveInput('time')} onFocus={() => this.activeInput('time')} style={Styles.itemInput}/>
-                                    </Item>
-                                    <Image source={this.renderInputImage('time')} style={Styles.itemImage} resizeMode={'contain'}/>
-                                    <DateTimePicker
-                                        isVisible={this.state.isTimePickerVisible}
-                                        onConfirm={this.handleTimePicked}
-                                        onCancel={this.hideTimePicker}
-                                        mode={'time'}
-                                    />
-                                </View>
+                                {/*<View style={[Styles.inputParent , {borderColor: this.state.timeStatus === 1 ? '#0fd1fa' : '#acabae'}]}>*/}
+                                    {/*<Item floatingLabel style={Styles.item} bordered onPress={this.showTimePicker}>*/}
+                                        {/*<Label style={[Styles.labelItem , {color:this.state.timeStatus === 1 ? '#0fd1fa': '#acabae', top:-13}]}>{ i18n.t('time') }</Label>*/}
+                                        {/*<Input disabled value={this.state.time.toString()} auto-capitalization={false} onBlur={() => this.unActiveInput('time')} onFocus={() => this.activeInput('time')} style={Styles.itemInput}/>*/}
+                                    {/*</Item>*/}
+                                    {/*<Image source={this.renderInputImage('time')} style={Styles.itemImage} resizeMode={'contain'}/>*/}
+                                    {/*<DateTimePicker*/}
+                                        {/*isVisible={this.state.isTimePickerVisible}*/}
+                                        {/*onConfirm={this.handleTimePicked}*/}
+                                        {/*onCancel={this.hideTimePicker}*/}
+                                        {/*mode={'time'}*/}
+                                    {/*/>*/}
+                                {/*</View>*/}
                                 <View style={Styles.sliderParent}>
                                     <Slider
                                         step={1000}
@@ -263,7 +348,7 @@ class Category extends Component {
                             </Form>
 
                             <View style={Styles.btnParent} >
-                                <TouchableOpacity onPress={() => this.toggleModal()} style={Styles.confirmBtn}>
+                                <TouchableOpacity onPress={() => this.filter()} style={Styles.confirmBtn}>
                                     <Text style={{color:'#fff' , fontFamily: 'RegularFont' , fontSize:16}}>{ i18n.t('confirm') }</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity onPress={() => this.toggleModal()} style={Styles.cancelBtn}>
@@ -279,4 +364,9 @@ class Category extends Component {
     }
 }
 
-export default Category;
+const mapStateToProps = ({ lang }) => {
+    return {
+        lang: lang.lang
+    };
+};
+export default connect(mapStateToProps, {})(Category);

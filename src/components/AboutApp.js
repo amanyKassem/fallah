@@ -43,7 +43,7 @@ class AboutApp extends Component {
     renderLoader(){
         if (this.state.status === null){
             return(
-                <View style={{ alignItems: 'center', justifyContent: 'center', height: height + 100, alignSelf:'center' , backgroundColor:'#fff' }}>
+                <View style={{ alignItems: 'center', justifyContent: 'center', height: height + 100, alignSelf:'center' , backgroundColor:'#fff' , width:'100%' }}>
                     <DoubleBounce size={20} color="#0fd1fa" />
                 </View>
             );
@@ -65,7 +65,7 @@ class AboutApp extends Component {
                     </View>
                 </Header>
                 <Content style={Styles.homecontent}>
-
+                    { this.renderLoader() }
                     <View style={[Styles.eventswiper ,  {backgroundColor:'#121320' , height:400}]}>
                         <Image source={require('../../assets/images/bg_color_vectors.png')} style={[Styles.eventswiper , { height: 400 }]} resizeMode={'cover'} />
                         <View style={[Styles.dateHours , {bottom:'55%' , textAlign:'center' , left:0 , paddingHorizontal:15}]}>

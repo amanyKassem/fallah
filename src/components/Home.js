@@ -14,28 +14,13 @@ import ReactNativeParallaxHeader from 'react-native-parallax-header';
 import axios from 'axios'
 import CONST from '../consts'
 import { DoubleBounce } from 'react-native-loader';
+import {connect} from "react-redux";
 
 
 const height = Dimensions.get('window').height;
 const IS_IPHONE_X = height === 812 || height === 896;
 const STATUS_BAR_HEIGHT = Platform.OS === 'ios' ? (IS_IPHONE_X ? 44 : 20) : 0;
 const HEADER_HEIGHT = Platform.OS === 'ios' ? (IS_IPHONE_X ? 88 : 64) : 70;
-const categories=[
-    {id:1 , name:'أعياد ميلاد' , image:require('../../assets/images/pic_one.png')},
-    {id:2 , name:'حفلات' , image:require('../../assets/images/pic_four.png')},
-    {id:1 , name:'أعياد ميلاد' , image:require('../../assets/images/pic_five.png')},
-    {id:2 , name:'حفلات' , image:require('../../assets/images/pic_one.png')},
-    {id:1 , name:'أعياد ميلاد' , image:require('../../assets/images/pic_four.png')},
-    {id:2 , name:'حفلات' , image:require('../../assets/images/pic_five.png')},
-    {id:2 , name:'حفلات' , image:require('../../assets/images/pic_five.png')},
-    {id:2 , name:'حفلات' , image:require('../../assets/images/pic_five.png')},
-    {id:2 , name:'حفلات' , image:require('../../assets/images/pic_five.png')},
-    {id:2 , name:'حفلات' , image:require('../../assets/images/pic_five.png')},
-    {id:2 , name:'حفلات' , image:require('../../assets/images/pic_five.png')},
-    {id:2 , name:'حفلات' , image:require('../../assets/images/pic_five.png')},
-    {id:2 , name:'حفلات' , image:require('../../assets/images/pic_five.png')},
-    {id:2 , name:'حفلات' , image:require('../../assets/images/pic_five.png')},
-]
 
 
 class Home extends Component {
@@ -43,7 +28,7 @@ class Home extends Component {
         super(props);
 
         this.state={
-            categories,
+            categories:[],
             isModalVisible: false,
             fancyModal: false,
             showDeleteMsg:false,
@@ -51,22 +36,44 @@ class Home extends Component {
             scrollY: 0,
             adsImgs:[],
             status: null,
+            mute: true,
+            shouldPlay: false,
+            imgUri: null,
         }
     }
+    handlePlayAndPause = () => {
+        this.setState((prevState) => ({
+            shouldPlay: !prevState.shouldPlay
+        }));
+    }
 
+    handleVolume = () => {
+        this.setState(prevState => ({
+            mute: !prevState.mute,
+        }));
+    }
     componentWillMount(){
         axios.get(CONST.url+'ads').then(response=>{
             this.setState({adsImgs:response.data.data , status:response.data.status})
         })
-
+        axios({
+            url: CONST.url + 'categories',
+            method: 'POST',
+            data: {lang: this.props.lang}
+        }).then(response => {
+            this.setState({
+                categories: response.data.data,
+                status: response.data.status,
+            })
+        })
     }
 
     toggleModal = () => {
         this.setState({ isModalVisible: !this.state.isModalVisible });
     };
-    fancyModal = () => {
-        this.setState({ fancyModal: !this.state.fancyModal });
-    };
+    // fancyModal = () => {
+    //     this.setState({ fancyModal: !this.state.fancyModal });
+    // };
 
     static navigationOptions = () => ({
         drawerLabel: i18n.t('home') ,
@@ -78,13 +85,13 @@ class Home extends Component {
 
     renderItems = (item) => {
         return(
-            <TouchableOpacity onPress={() => this.props.navigation.navigate('category', { id: item.id })} style={Styles.categoryList}>
+            <TouchableOpacity onPress={() => this.props.navigation.navigate('category', { id: item.id  , name :item.name})} style={Styles.categoryList}>
                 <View style={Styles.homeViewContainer}>
                     <View style={Styles.homeTextCont}>
                         <Text style={Styles.homeText}>{item.name}</Text>
                     </View>
                     <View style={Styles.viewLine}></View>
-                    <Image source={item.image} resizeMode={'cover'} style={Styles.flatImage}/>
+                    <Image source={{ uri: item.image }} resizeMode={'cover'} style={Styles.flatImage}/>
                 </View>
             </TouchableOpacity>
         );
@@ -103,7 +110,15 @@ class Home extends Component {
             )
         }
     }
-
+    renderLoader(){
+        if (this.state.status === null){
+            return(
+                <View style={{ alignItems: 'center', justifyContent: 'center', height: height + 100, alignSelf:'center' , backgroundColor:'#fff' , width:'100%' }}>
+                    <DoubleBounce size={20} color="#0fd1fa" />
+                </View>
+            );
+        }
+    }
 
     renderNavBar = () => (
 
@@ -116,38 +131,58 @@ class Home extends Component {
             </Button>
         </View>
     )
+
+    componentWillReceiveProps(nextProps, nextContext) {
+        console.log('nextProps', nextProps);
+    }
+
     renderContent = () => {
+
+        const url      = this.state.imgUri;
+        let isVideo    = false;
+        let imgArr     = [{url}];
+
+        if (url){
+            const splitArr = url.split('.');
+            const ext      = splitArr[splitArr.length - 1].toLowerCase();
+            isVideo        = ext === 'mp4' || ext === 'avi' || ext === 'm4v' || ext === 'mpg' ? true : false;
+        }
 
         return(
         <Content style={[Styles.homecontent , {} ]} onScroll={e => console.log('ppppppppp...',e.nativeEvent.contentOffset.y)}>
+
             <View>
                 <Swiper key={this.state.adsImgs.length} dotStyle={Styles.doteStyle} activeDotStyle={Styles.activeDot}
                         containerStyle={Styles.swiper} showsButtons={false} autoplay={true}>
                     {
-                        this.state.adsImgs.map((img,i) =>{
+                            this.state.adsImgs.map((img,i) =>{
                             let url  = img.url;
                             const splitArr = url.split('.');
                             const ext  = splitArr[splitArr.length - 1].toLowerCase();
 
                             if (ext === 'mp4' || ext === 'avi' || ext === 'm4v' || ext === 'mpg'){
                                 return (
-                                    <TouchableOpacity onPress={() => this.fancyModal()} style={Styles.slide} key={i}>
+                                    <TouchableOpacity onPress={() => this.setState({ fancyModal: !this.state.fancyModal, imgUri: url })} style={Styles.slide} key={i}>
                                         <View style={Styles.swiperLine}/>
-                                        <Video
-                                            source={{ uri: url }}
-                                            rate={1.0}
-                                            volume={1.0}
-                                            isMuted={false}
-                                            resizeMode="contain"
-                                            shouldPlay
-                                            isLooping
-                                            style={{ width: '100%', height: '100%' }}
-                                        />
+                                            <Video
+                                                source={{ uri: url }}
+                                                rate={1.0}
+                                                volume={1.0}
+                                                isMuted={this.state.mute}
+                                                resizeMode="contain"
+                                                shouldPlay={this.state.shouldPlay}
+                                                isLooping
+                                                style={{ width: '100%', height: '100%' }}
+                                            />
+                                            <View style={Styles.controlBar}>
+                                                <Icon type={'AntDesign'} name={'play'} style={{ fontSize: 30, color: '#e51d6f' }} />
+                                            </View>
+                                        {/*</View>*/}
                                     </TouchableOpacity>
                                 )
                             } else{
                                 return (
-                                    <TouchableOpacity onPress={() => this.fancyModal()} style={Styles.slide} key={i}>
+                                    <TouchableOpacity onPress={() => this.setState({ fancyModal: !this.state.fancyModal, imgUri: url })} style={Styles.slide} key={i}>
                                         <View style={Styles.swiperLine}/>
                                         <Image source={{ uri: img.url }} style={Styles.swiperimage}
                                                resizeMode={'cover'}/>
@@ -204,12 +239,48 @@ class Home extends Component {
 
                 {this.renderDeleteMsg()}
             </Modal>
-            <Modal style={{}} isVisible={this.state.fancyModal} onBackdropPress={() => this.fancyModal()}>
-                <TouchableOpacity  onPress={() => this.fancyModal()} style={{ backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center', width: 35, height: 35 , position:'absolute'
+            <Modal style={{}} isVisible={this.state.fancyModal} onBackdropPress={()=> this.setState({ fancyModal : false, imgUri: null })}>
+                <TouchableOpacity  onPress={()=> this.setState({ fancyModal : false, imgUri: null })} style={{ backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center', width: 35, height: 35 , position:'absolute'
                     , zIndex:20 , top:10 , left:10 , borderRadius:5}}>
                     <Icon name={'close'} type={'EvilIcons'} style={{ color: '#e51d6f', fontSize: 30 }} />
                 </TouchableOpacity>
-                <ImageViewer enableImageZoom={true} onSwipeDown={() => this.fancyModal()} enableSwipeDown={true} imageUrls={this.state.adsImgs}/>
+
+                {
+                    isVideo ? (
+                        <View style={Styles.slide} >
+                            <Video
+                                source={{ uri: url }}
+                                rate={1.0}
+                                volume={1.0}
+                                isMuted={!this.state.mute}
+                                resizeMode="contain"
+                                shouldPlay={!this.state.shouldPlay}
+                                isLooping
+                                style={{ width: '100%', height: '100%' }}
+                            />
+                            <View style={{position: 'absolute', bottom: 0, left: 0, right: 0, height: 45, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', backgroundColor: "rgba(0, 0, 0, 0.5)"}}>
+                                <TouchableOpacity onPress={this.handleVolume} style={{width:45 , height:45}}>
+                                    <Icon type={'FontAwesome'} name={this.state.mute ? "volume-off" : "volume-up"}
+                                          style={{ fontSize: 30, color: '#e51d6f' }} />
+                                </TouchableOpacity>
+
+
+                                <TouchableOpacity onPress={this.handlePlayAndPause} style={{width:45 , height:45}}>
+                                    <Icon type={'FontAwesome'} name={this.state.shouldPlay ? "pause" : "play"}
+                                          style={{ fontSize: 30, color: '#e51d6f' }} />
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    ) :
+                        (
+                            <ImageViewer enableImageZoom={true} onSwipeDown={()=> this.setState({ fancyModal : false, imgUri: null })} enableSwipeDown={true} imageUrls={imgArr}/>
+                        )
+
+
+                }
+
+
+
             </Modal>
         </Content>
     )}
@@ -220,6 +291,7 @@ class Home extends Component {
         return (
 
             <Container style={Styles.container}>
+                { this.renderLoader() }
             {/*<Header style={[Styles.header , {marginTop:Platform.OS === 'ios' ?15:40}]} noShadow>*/}
 
             {/*</Header>*/}
@@ -248,4 +320,9 @@ class Home extends Component {
     }
 }
 
-export default Home;
+const mapStateToProps = ({ lang }) => {
+    return {
+        lang: lang.lang
+    };
+};
+export default connect(mapStateToProps, {})(Home);

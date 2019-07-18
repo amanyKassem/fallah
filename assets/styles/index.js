@@ -363,7 +363,9 @@ const styles = ({
     },
     eventTouch:{
         flex:1,
-        marginBottom: 15
+        marginBottom: 15,
+        width:'100%',
+        height: 30
     },
     eventCont : {
         flex:1,
@@ -554,7 +556,8 @@ const styles = ({
     pickerImg:{
         width: 20,
         height: 20,
-        right: 10
+        right:I18nManager.isRTL ? 10 :'auto',
+        left:I18nManager.isRTL ? 'auto' :10,
     },
     //event details page
     eventdoteStyle:{
@@ -599,7 +602,7 @@ const styles = ({
     slider:{
         width: (width * 85) / 100  ,
         height:35 ,
-        borderWidth:1 ,
+        // borderWidth:1 ,
         borderColor:'#acabae',
         borderWidth:0
     },
@@ -612,7 +615,8 @@ const styles = ({
     },
     btnParent:{
         flexDirection:'row' ,
-        marginTop: 20
+        marginTop: 20,
+        height:45
     },
     confirmBtn:{
         backgroundColor:'#0fd1fa' ,
@@ -695,6 +699,17 @@ const styles = ({
         fontFamily:'RegularFont' ,
         fontSize:17 ,
         color:'#6d6c72'
+    },
+    controlBar: {
+        position: 'absolute',
+        bottom: '40%',
+        left: 0,
+        right: 0,
+        height: 45,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: "transparent",
     }
 
 })
