@@ -11,14 +11,15 @@ import {
     Switch,
     Platform
 } from "react-native";
-import {Container, Content, Button, Footer, Icon, Header, Left, Form, Item, Picker,Label, Input, Body} from 'native-base'
+import {Container, Content, Header,  Item,Label, Input, Body , Toast} from 'native-base'
 import Modal from "react-native-modal";
 import Styles from '../../assets/styles'
-import QRCode from 'react-native-qrcode';
 import i18n from "../../local/i18n";
-// import axios from 'axios'
-// import CONST from '../consts'
-// import { Bars } from 'react-native-loader';
+import {connect} from "react-redux";
+import {DoubleBounce} from "react-native-loader";
+import axios from "axios";
+import CONST from "../consts";
+import {updateProfile} from "../actions";
 
 
 const height = Dimensions.get('window').height;
@@ -37,6 +38,7 @@ class Settings extends Component {
             currentPassStatus:0,
             newPassStatus: 0,
             rePassStatus: 0,
+            isSubmitted: false
         }
     }
     activeInput(type){
@@ -49,9 +51,9 @@ class Settings extends Component {
     }
 
     unActiveInput(type){
-        if (type === 'address'){
+        if (type === 'currentPass'){
             this.setState({ currentPassStatus: 0})
-        }else if (type === 'phone') {
+        }else if (type === 'newPass') {
             this.setState({newPassStatus: 0})
         }else
             this.setState({rePassStatus: 0})
@@ -69,9 +71,57 @@ class Settings extends Component {
         //     this.props.chooseLang(this.state.selectedLang);
         // }
     };
+    renderSubmit(){
+        if (this.state.isSubmitted){
+            return(
+                <View style={{justifyContent:'center' , alignItems:'center', width:'50%', flex:1}}>
+                    <DoubleBounce size={20} color="#26b5c4" style={{alignSelf: 'center' , width:'100%'}}/>
+                </View>
+            )
+        }
+
+        if (this.state.currentPass == '' || this.state.newPass == '' || this.state.rePass == '' ){
+            return (
+                <View  style={[Styles.confirmBtn , {backgroundColor:'#999'}]} >
+                    <Text style={{color:'#fff' , fontFamily: 'RegularFont' , fontSize:16}}>{ i18n.t('confirm') }</Text>
+                </View>
+            );
+        }else {
+            return (
+                <TouchableOpacity  style={Styles.confirmBtn}  onPress={() => this.onPassChange()}>
+                    <Text style={{color:'#fff' , fontFamily: 'RegularFont' , fontSize:16}}>{ i18n.t('confirm') }</Text>
+                </TouchableOpacity>
+            );
+        }
+    }
+
     onPassChange() {
-        this.setState({ isModalPassVisible: !this.state.isModalPassVisible });
-        this.props.navigation.navigate('profile');
+        if (this.state.newPass === this.state.rePass){
+            this.setState({ isSubmitted: true });
+            axios({
+                method: 'POST',
+                url: CONST.url + 'update_password',
+                headers: {Authorization: this.props.user.token},
+                data: {
+                    old_password: this.state.currentPass,
+                    new_password: this.state.newPass,
+                    lang: this.props.lang,
+                }
+            }).then(response => {
+                this.setState({ isSubmitted: false, isModalPassVisible: !this.state.isModalPassVisible, currentPass: '', newPass: '', rePass: '' });
+                Toast.show({
+                    text: response.data.msg,
+                    type:  response.data.status == 200 ? "success" : "danger",
+                    duration: 3000
+                });
+            })
+        } else{
+            Toast.show({
+                text: i18n.t('verifyPassword'),
+                type: "danger",
+                duration: 3000
+            });
+        }
     };
     stopNotification = (value) =>{
         this.setState({ SwitchOnValueHolder: value })
@@ -168,26 +218,24 @@ class Settings extends Component {
                                 <View style={[Styles.inputParent , {borderColor: this.state.currentPassStatus === 1 ? '#0fd1fa' : '#acabae' , width:'85%' , alignSelf:'center'}]}>
                                     <Item floatingLabel style={[Styles.item , {width:'100%'}]} bordered>
                                         <Label style={[Styles.labelItem , {color:this.state.currentPassStatus === 1 ? '#0fd1fa': '#acabae' , fontSize:16 , left:8}]}>{ i18n.t('password') }</Label>
-                                        <Input onChangeText={(currentPass) => this.setState({ currentPass })} auto-capitalization={false} secureTextEntry onBlur={() => this.unActiveInput('currentPass')} onFocus={() => this.activeInput('currentPass')} style={Styles.itemInput}/>
+                                        <Input  value={this.state.currentPass} onChangeText={(currentPass) => this.setState({ currentPass })} auto-capitalization={false} secureTextEntry onBlur={() => this.unActiveInput('currentPass')} onFocus={() => this.activeInput('currentPass')} style={Styles.itemInput}/>
                                     </Item>
                                 </View>
                                 <View style={[ Styles.inputParent ,{ borderColor: this.state.newPassStatus === 1 ? '#0fd1fa' : '#acabae'  , width:'85%' , alignSelf:'center'}]}>
                                     <Item floatingLabel style={[Styles.item , {width:'100%'}]} bordered>
                                         <Label style={[Styles.labelItem ,{ color:this.state.newPassStatus === 1 ?'#0fd1fa': '#acabae' , fontSize:16 , left:8}]}>{ i18n.t('newPass') }</Label>
-                                        <Input onChangeText={(newPass) => this.setState({newPass})} auto-capitalization={false} secureTextEntry onBlur={() => this.unActiveInput('newPass')} onFocus={() => this.activeInput('newPass')} style={Styles.itemInput}  />
+                                        <Input value={this.state.newPass} onChangeText={(newPass) => this.setState({newPass})} auto-capitalization={false} secureTextEntry onBlur={() => this.unActiveInput('newPass')} onFocus={() => this.activeInput('newPass')} style={Styles.itemInput}  />
                                     </Item>
                                 </View>
                                 <View style={[ Styles.inputParent ,{ borderColor: this.state.rePassStatus === 1 ? '#0fd1fa' : '#acabae'  , width:'85%' , alignSelf:'center'}]}>
                                     <Item floatingLabel style={[Styles.item , {width:'100%'}]} bordered>
                                         <Label style={[Styles.labelItem ,{ color:this.state.rePassStatus === 1 ?'#0fd1fa': '#acabae' , fontSize:16 , left:8 }]}>{ i18n.t('verifyNewPass') }</Label>
-                                        <Input onChangeText={(rePass) => this.setState({rePass})} auto-capitalization={false} secureTextEntry onBlur={() => this.unActiveInput('rePass')} onFocus={() => this.activeInput('rePass')} style={Styles.itemInput}  />
+                                        <Input value={this.state.rePass} onChangeText={(rePass) => this.setState({rePass})} auto-capitalization={false} secureTextEntry onBlur={() => this.unActiveInput('rePass')} onFocus={() => this.activeInput('rePass')} style={Styles.itemInput}  />
                                     </Item>
                                 </View>
                             </View>
                             <View style={[Styles.btnParent ,{marginTop:30 , backgroundColor:'#fff'}]} >
-                                <TouchableOpacity  style={Styles.confirmBtn}  onPress={() => this.onPassChange()}>
-                                    <Text style={{color:'#fff' , fontFamily: 'RegularFont' , fontSize:16}}>{ i18n.t('confirm') }</Text>
-                                </TouchableOpacity>
+                                { this.renderSubmit() }
                                 <TouchableOpacity style={Styles.cancelBtn} onPress={() => this._toggleModalPass()}>
                                     <Text style={{color:'#e51d6f' , fontFamily: 'RegularFont' , fontSize:16}}>{ i18n.t('cancel') }</Text>
                                 </TouchableOpacity>
@@ -200,5 +248,11 @@ class Settings extends Component {
         );
     }
 }
+const mapStateToProps = ({ profile, lang }) => {
+    return {
+        user: profile.user,
+        lang: lang.lang
+    };
+};
 
-export default Settings;
+export default connect(mapStateToProps, {updateProfile})(Settings);

@@ -63,6 +63,7 @@ const ar = {
     'goldTicket':'تذكرة ذهبية',
     'normalTicket':'تذكرة عادية',
     'onlineBooking':'حجز اونلاين',
+    'verifyPassword': 'كلمة المرور و تأكيد كلمة المرور غير متطابقين'
 }
 
 export default ar;

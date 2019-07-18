@@ -63,6 +63,7 @@ const en = {
     'goldTicket':'gold ticket',
     'normalTicket':'normal ticket',
     'onlineBooking':'online booking',
+    'verifyPassword': 'Password and password confirmation do not match',
 }
 
 export default en;

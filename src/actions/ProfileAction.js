@@ -50,18 +50,18 @@ export const updateProfile = (data) => {
     }
 }
 
-//
-// export const logout = (data) => {
-//     return (dispatch) => {
-//         axios({
-//             url: CONST.url + 'logout',
-//             method: 'POST',
-//             headers: {Authorization: data.token },
-//         }).then(response => {
-//                 AsyncStorage.clear()
-//                 dispatch({type: 'logout'})
-//             }
-//         )
-//     }
-// }
+
+export const logout = (data) => {
+    return (dispatch) => {
+        axios({
+            url: CONST.url + 'logout',
+            method: 'POST',
+            headers: {Authorization: data.token },
+        }).then(response => {
+                AsyncStorage.clear()
+                dispatch({type: 'logout'})
+            }
+        )
+    }
+}
 

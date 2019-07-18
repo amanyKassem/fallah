@@ -632,7 +632,8 @@ const styles = ({
         height:45 ,
         justifyContent:'center' ,
         alignItems:'center' ,
-        width:'50%'
+        width:'50%',
+        alignSelf:'flex-end'
     },
     greenCircle:{
         borderRadius:50 ,

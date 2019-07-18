@@ -76,14 +76,15 @@ const AppNavigator = createStackNavigator({
     //         header: null
     //     }
     // },
-    editProfile: {
-        screen: EditProfile,
+
+    drawerNavigator: {
+        screen: DrawerNavigator,
         navigationOptions: {
             header: null
         }
     },
-    drawerNavigator: {
-        screen: DrawerNavigator,
+    editProfile: {
+        screen: EditProfile,
         navigationOptions: {
             header: null
         }
