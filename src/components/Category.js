@@ -4,7 +4,7 @@ import { Container, Content, Button, Picker, Icon, Header , Left, Right, Body , 
 import Modal from "react-native-modal";
 import Styles from '../../assets/styles';
 import DateTimePicker from "react-native-modal-datetime-picker";
-import i18n from "../../local/i18n";
+import i18n from "../../locale/i18n";
 import axios from "axios";
 import CONST from "../consts";
 import {NavigationEvents} from "react-navigation";
@@ -32,6 +32,9 @@ class Category extends Component {
             dateStatus:0,
             timeStatus:0,
             value: null,
+            max: null,
+            step: null,
+            min: null,
             isDatePickerVisible: false,
             isTimePickerVisible: false,
             category:[],
@@ -56,6 +59,10 @@ class Category extends Component {
                 category: response.data.data.category,
                 events: response.data.data.events,
                 status: response.data.status,
+                value: response.data.data.min,
+                min: response.data.data.min,
+                max: response.data.data.max,
+                step: response.data.data.step,
             })
         })
 
@@ -330,19 +337,19 @@ class Category extends Component {
                                 {/*</View>*/}
                                 <View style={Styles.sliderParent}>
                                     <Slider
-                                        step={1000}
-                                        maximumValue={2500}
+                                        step={this.state.step}
+                                        maximumValue={this.state.max}
                                         onValueChange={(value) => this.change(value)}
-                                        value={this.state.value}
+                                        // value={this.state.value}
                                         thumbTintColor={'#000'}
                                         style={Styles.slider}
                                         maximumTrackTintColor={"#e51d6f"}
                                         minimumTrackTintColor={'#000'}
                                     />
                                     <View style={Styles.range}>
-                                        <Text style={{ color: '#acabae' }}>500</Text>
-                                        <Text style={{ color: '#acabae' , marginLeft:Platform.OS === 'ios' ?'57%' : '35%'}}>1500</Text>
-                                        <Text style={{ color: '#acabae' }}>2500</Text>
+                                        <Text style={{ color: '#acabae' }}>{this.state.max}</Text>
+                                        <Text style={{ color: '#acabae' }}>{this.state.value}</Text>
+                                        <Text style={{ color: '#acabae' }}>{this.state.min}</Text>
                                     </View>
                                 </View>
                             </Form>

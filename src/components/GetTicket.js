@@ -17,10 +17,11 @@ import {
 } from 'native-base'
 import Styles from '../../assets/styles'
 import QRCode from 'react-native-qrcode';
-import i18n from "../../local/i18n";
+import i18n from "../../locale/i18n";
 import axios from "axios";
 import CONST from "../consts";
 import {connect} from "react-redux";
+import {NavigationEvents} from "react-navigation";
 import { DoubleBounce } from 'react-native-loader';
 
 
@@ -80,11 +81,19 @@ class GetTicket extends Component {
             this.props.navigation.navigate('home')
         })
     }
+    onFocus(payload){
+        console.log('this is onWillFocus', payload)
+        this.setState({ status: null });
+
+        this.componentWillMount()
+    }
     render() {
         const name = this.props.navigation.state.params.name;
         return (
 
             <Container style={{backgroundColor:'#fff'}}>
+                { this.renderLoader() }
+                <NavigationEvents onWillFocus={payload => this.onFocus(payload)} />
                 <Header style={Styles.header} noShadow>
                     <View style={[Styles.headerView , {flexDirection:'row' , paddingHorizontal:10}]}>
                         <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
@@ -93,7 +102,7 @@ class GetTicket extends Component {
                     </View>
                 </Header>
                 <Content style={Styles.homecontent}>
-                    { this.renderLoader() }
+
                     <View style={Styles.QR}>
                         <QRCode
                             value={this.state.ticket.booking_id}
@@ -114,8 +123,8 @@ class GetTicket extends Component {
                     </View>
 
                     <View style={[Styles.parentViewEvent , {height:'auto' , paddingRight:40 , marginTop:-105}]}>
-                        <View style={{flexDirection:'row'}}>
-                            <Text style={[Styles.eventboldName , {fontSize:16, marginRight:140}]}>{name}</Text>
+                        <View style={{flexDirection:'row' , flexWrap:'wrap'}}>
+                            <Text style={[Styles.eventboldName , {fontSize:16, marginRight:I18nManager.isRTL ?'25%':0 ,  marginLeft:I18nManager.isRTL ?0 : '25%'}]}>{name}</Text>
                             <Text style={[Styles.eventText , {color:'#e51d6f' , fontSize:16}]}>{this.state.ticket.price}</Text>
                         </View>
                         <View style={{flexDirection:'column' , marginTop:10}}>

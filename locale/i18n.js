@@ -15,6 +15,7 @@ I18n.translations = {
 I18n.locale = 'ar';
 
 AsyncStorage.getItem('lang').then(lang => {
+    console.log('i18n ...', lang);
     I18n.locale = lang;
 });
 

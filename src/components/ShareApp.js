@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Image} from "react-native";
-import i18n from "../../local/i18n";
+import i18n from "../../locale/i18n";
 
 
 class ShareApp extends Component {

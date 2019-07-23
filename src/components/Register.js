@@ -14,7 +14,11 @@ import {
 } from "react-native";
 import {Container, Content, Form, Item, Input, Label, Button, Toast, Header} from 'native-base'
 import styles from '../../assets/styles'
-import i18n from '../../local/i18n'
+import i18n from '../../locale/i18n'
+import {DoubleBounce} from "react-native-loader";
+import axios from 'axios';
+import { connect } from 'react-redux';
+import CONST from '../consts'
 
 class Register extends Component {
     constructor(props){
@@ -30,9 +34,7 @@ class Register extends Component {
             mail: '',
             password: '',
             rePassword: '',
-            token: '',
-            userId: null,
-            isLoaded: false
+            isSubmitted: false,
         }
     }
 
@@ -102,12 +104,101 @@ class Register extends Component {
         return source;
     }
 
+    validate = () => {
+        let isError = false;
+        let msg = '';
 
+        if (this.state.phone.length <= 0 || this.state.phone.length !== 10) {
+            isError = true;
+            msg = i18n.t('phoneValidation');
+        }else if (this.state.password.length <= 0) {
+            isError = true;
+            msg = i18n.t('passwordRequired');
+        }else if (this.state.password != this.state.rePassword) {
+            isError = true;
+            msg = i18n.t('verifyPassword');
+        }else if (this.state.password.length < 6) {
+            isError = true;
+            msg = i18n.t('passwordLength');
+        }else if (this.state.mail.length <= 0 || this.state.mail.indexOf("@") === -1 || this.state.mail.indexOf(".") === -1) {
+            isError = true;
+            msg = i18n.t('emailNotCorrect');
+        }
+
+        if (msg != ''){
+            Toast.show({
+                text: msg,
+                type: "danger",
+                duration: 3000
+            });
+        }
+        return isError;
+    };
+
+    onRegister(){
+        const err = this.validate();
+        if (!err){
+            this.setState({ isSubmitted: true });
+            AsyncStorage.getItem('deviceID').then(token => {
+                axios.post(CONST.url + 'register' ,{
+                    name: this.state.username,
+                    phone: this.state.phone,
+                    password: this.state.password,
+                    email: this.state.mail,
+                    lang: this.props.lang,
+                    device_id: token
+                }).then(response => {
+                    this.setState({ isSubmitted: false });
+
+                    if (response.data.status == 200){
+                        const {phone, password } = this.state;
+                        this.props.navigation.navigate('verify', { phone, password, token, code: response.data.data.code })
+                    }
+
+                    Toast.show({
+                        text: response.data.msg,
+                        type: response.data.status == 200 ? "success" : "danger",
+                        duration: 3000
+                    });
+                }).catch(e => {
+                    this.setState({ isSubmitted: false });
+                    Toast.show({
+                        text: 'يوجد خطأ ما الرجاء المحاولة مرة اخري',
+                        type: "danger",
+                        duration: 3000
+                    });
+                })
+            })
+        }
+    }
+
+
+    renderSubmit(){
+        if (this.state.isSubmitted){
+            return(
+                <DoubleBounce size={20} color="#0fd1fa" />
+            )
+        }
+
+        if (this.state.username == '' || this.state.phone == '' || this.state.mail == '' || this.state.password == '' || this.state.rePassword == ''){
+            return (
+                <Button disabled onPress={() => this.onRegister()} style={[styles.loginBtn , { backgroundColor:'#999'}]}>
+                    <Text style={styles.btnTxt}>{ i18n.t('registerButton') }</Text>
+                </Button>
+            );
+        }else {
+            return (
+                <Button onPress={() => this.onRegister()} style={styles.loginBtn}>
+                    <Text style={styles.btnTxt}>{ i18n.t('registerButton') }</Text>
+                </Button>
+            );
+        }
+    }
 
     render() {
         return (
             <Container style={styles.container}>
-                <Header style={[styles.header , { marginTop:0, height:Platform.OS === 'ios' ?70:60 , top:20 }]} noShadow>
+                <Header style={[styles.header , { marginTop:0, height:Platform.OS === 'ios' ?70:60 , top:40 }]} noShadow>
                     <View style={[styles.headerView , {flexDirection:'row' , paddingHorizontal:10 , top:-5}]}>
                         <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
                             <Image source={require('../../assets/images/white_right.png')} style={[styles.headerNoti, styles.transform ]} resizeMode={'contain'} />
@@ -170,9 +261,7 @@ class Register extends Component {
                             </Form>
 
                             <View style={{ marginTop: 50 , marginBottom:40 }}>
-                                <Button onPress={() => this.props.navigation.navigate('verify')} style={styles.loginBtn}>
-                                    <Text style={styles.btnTxt}>{ i18n.t('registerButton') }</Text>
-                                </Button>
+                                { this.renderSubmit() }
                             </View>
 
                         </View>
@@ -190,4 +279,10 @@ class Register extends Component {
 }
 
 
-export default Register;
+const mapStateToProps = ({ lang }) => {
+    return {
+        lang: lang.lang,
+    };
+};
+
+export default connect(mapStateToProps, {})(Register);

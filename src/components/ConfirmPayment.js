@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import {View, Text, StyleSheet, Image, TouchableOpacity, Dimensions, I18nManager, KeyboardAvoidingView, Slider} from "react-native";
 import {Container, Content, Button, Footer, Icon, Header, Left, Form, Item, Picker, Label, Input} from 'native-base'
 import Styles from '../../assets/styles'
-import i18n from "../../local/i18n";
+import i18n from "../../locale/i18n";
 // import axios from 'axios'
 // import CONST from '../consts'
 // import { Bars } from 'react-native-loader';
@@ -45,7 +45,7 @@ class ConfirmPayment extends Component {
 
                 </Content>
                 <View style={[Styles.btnParent ,{marginTop:0 , backgroundColor:'#fff'}]} >
-                    <TouchableOpacity  style={Styles.confirmBtn}  onPress={() => this.props.navigation.navigate('getTicket')}>
+                    <TouchableOpacity  style={Styles.confirmBtn}  onPress={() => this.props.navigation.navigate('getTicket' , {id:13})}>
                         <Text style={{color:'#fff' , fontFamily: 'RegularFont' , fontSize:16}}>{ i18n.t('ticket') }</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={Styles.cancelBtn} onPress={() => this.props.navigation.navigate('home')}>

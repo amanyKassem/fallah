@@ -28,11 +28,14 @@ import Intro from "../components/Intro";
 import SuggestedEvent from "../components/SuggestedEvent";
 import CommonEvent from "../components/CommonEvent";
 import SavedEvent from "../components/SavedEvent";
+import InitScreen from "../components/InitScreen";
+import Organizations from "../components/Organizations";
 import RNParallax from "../components/RNParallax";
 
 const drawerCust = (props) => (<DrawerCustomization {...props} />)
 const DrawerNavigator = createDrawerNavigator({
     home:Home,
+    organizations:Organizations,
     aboutApp:AboutApp,
     shareApp:ShareApp,
     conditions:Conditions,
@@ -70,15 +73,27 @@ const AppNavigator = createStackNavigator({
     //     }
     // },
 
-    // language: {
-    //     screen: Language,
-    //     navigationOptions: {
-    //         header: null
-    //     }
-    // },
+    initScreen: {
+        screen: InitScreen,
+        navigationOptions: {
+            header: null
+        }
+    },
+    language: {
+        screen: Language,
+        navigationOptions: {
+            header: null
+        }
+    },
 
     drawerNavigator: {
         screen: DrawerNavigator,
+        navigationOptions: {
+            header: null
+        }
+    },
+    organizations: {
+        screen: Organizations,
         navigationOptions: {
             header: null
         }

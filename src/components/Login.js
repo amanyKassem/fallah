@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import {View, Text, Image, TouchableOpacity, ImageBackground, BackHandler, Linking, AsyncStorage, I18nManager, KeyboardAvoidingView , Platform} from "react-native";
 import {Container, Content, Form, Item, Input, Label, Button, Toast, Header} from 'native-base'
 import styles from '../../assets/styles'
-import i18n from '../../local/i18n'
+import i18n from '../../locale/i18n'
 import { connect } from 'react-redux';
 import { userLogin, profile } from '../actions'
 import { Permissions, Notifications } from 'expo'

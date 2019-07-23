@@ -14,7 +14,7 @@ import {
 import {Container, Content, Header,  Item,Label, Input, Body , Toast} from 'native-base'
 import Modal from "react-native-modal";
 import Styles from '../../assets/styles'
-import i18n from "../../local/i18n";
+import i18n from "../../locale/i18n";
 import {connect} from "react-redux";
 import {DoubleBounce} from "react-native-loader";
 import axios from "axios";

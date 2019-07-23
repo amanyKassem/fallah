@@ -3,7 +3,7 @@ import {View, Text, StyleSheet, Image, TouchableOpacity, Dimensions, I18nManager
 import {Container, Content, Button, Footer, Icon, Header, Left, Form, Item, Picker, Label, Input, Textarea} from 'native-base'
 import FooterSection from './Footer';
 import Styles from '../../assets/styles'
-import i18n from "../../local/i18n";
+import i18n from "../../locale/i18n";
 import {connect} from "react-redux";
 import {updateProfile} from "../actions";
 // import axios from 'axios'

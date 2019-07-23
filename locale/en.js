@@ -64,6 +64,9 @@ const en = {
     'normalTicket':'normal ticket',
     'onlineBooking':'online booking',
     'verifyPassword': 'Password and password confirmation do not match',
+    'guest': 'guest',
+    'codeNotCorrect' : 'code not correct',
+    'emailNotCorrect':  'email not correct',
 }
 
 export default en;

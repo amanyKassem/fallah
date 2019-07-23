@@ -3,7 +3,7 @@ import {View, Text, StyleSheet, Image, TouchableOpacity, Dimensions, I18nManager
 import {Container, Content, Button, Footer, Icon, Header, Form, Item, Label, Input, Toast,} from 'native-base'
 import Styles from '../../assets/styles'
 import {ImagePicker, Permissions } from 'expo';
-import i18n from "../../local/i18n";
+import i18n from "../../locale/i18n";
 import { updateProfile } from '../actions/ProfileAction'
 import axios from 'axios'
 import CONST from '../consts'

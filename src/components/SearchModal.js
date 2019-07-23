@@ -4,11 +4,12 @@ import { Container, Content, Button, Footer, Icon, Item , Input } from 'native-b
 import Modal from "react-native-modal";
 
 import Styles from '../../assets/styles'
-import i18n from "../../local/i18n";
+import i18n from "../../locale/i18n";
 import axios from "axios";
 import CONST from "../consts";
 import {connect} from "react-redux";
 import {DoubleBounce} from "react-native-loader";
+import SvgUri from "expo-svg-uri";
 
 const height = Dimensions.get('window').height;
 
@@ -77,6 +78,8 @@ class SearchModal extends Component {
                         </Item>
                         <Image source={require('../../assets/images/gray_search.png')} style={Styles.searchImg} resizeMode={'contain'}/>
                     </View>
+                    {/*<SvgUri width="25" height="25" fill={'#f00'} source={require("../../assets/images/search.svg")} />*/}
+
                     {/*<ScrollView style={{flex:1 , width:'100%' }}>*/}
                         {/*{this.renderSearchResult()}*/}
                     {/*</ScrollView>*/}

@@ -5,7 +5,7 @@ import Swiper from 'react-native-swiper';
 import FooterSection from './Footer';
 import Styles from '../../assets/styles'
 import Modal from "react-native-modal";
-import i18n from '../../local/i18n'
+import i18n from '../../locale/i18n'
 import * as Animatable from 'react-native-animatable';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import { Video } from 'expo-av';

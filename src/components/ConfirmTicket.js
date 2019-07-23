@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import {View, Text, StyleSheet, Image, TouchableOpacity, Dimensions, I18nManager} from "react-native";
 import {Container, Content, Button ,Icon, Header} from 'native-base'
 import Styles from '../../assets/styles'
-import i18n from "../../local/i18n";
+import i18n from "../../locale/i18n";
 // import axios from 'axios'
 // import CONST from '../consts'
 // import { Bars } from 'react-native-loader';

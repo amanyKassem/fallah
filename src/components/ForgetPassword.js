@@ -13,14 +13,18 @@ import {
 } from "react-native";
 import {Container, Content, Form, Item, Input, Label, Button, Toast, Header} from 'native-base'
 import styles from '../../assets/styles'
-import i18n from "../../local/i18n";
+import i18n from "../../locale/i18n";
+import {DoubleBounce} from "react-native-loader";
+import axios from "axios";
+import CONST from "../consts";
 
 class ForgetPassword extends Component {
     constructor(props){
         super(props);
         this.state = {
             phoneStatus: 0,
-            phone:null
+            phone:null,
+            isSubmitted: false,
         }
     }
 
@@ -51,13 +55,39 @@ class ForgetPassword extends Component {
 
         return source;
     }
+    onCheckPhone(){
+        this.setState({ isSubmitted: true });
+        axios.post(CONST.url + 'forget_password' ,{
+            phone: this.state.phone,
+        }).then(response => {
+            Toast.show({
+                text: response.data.msg,
+                type: response.data.status === 200 ? "success" :"danger",
+                duration: 3000
+            });
+            this.setState({ isSubmitted: false , phone:'' });
+            this.props.navigation.navigate("rePassword" , {id:response.data.data.id , code:response.data.data.code});
+        })
 
+    }
+    renderSubmit(){
+        if (this.state.isSubmitted){
+            return(
+                <DoubleBounce size={20} color="#0fd1fa" />
+            )
+        }
 
+        return (
+            <Button onPress={() => this.onCheckPhone()} style={styles.loginBtn}>
+                <Text style={styles.btnTxt}>{ i18n.t('sendButton') }</Text>
+            </Button>
+        );
+    }
 
     render() {
         return (
             <Container style={styles.container}>
-                <Header style={[styles.header , { marginTop:0, height:Platform.OS === 'ios' ?70:60 , top:20 }]} noShadow>
+                <Header style={[styles.header , { marginTop:0, height:Platform.OS === 'ios' ?70:60 , top:40 }]} noShadow>
                     <View style={[styles.headerView , {flexDirection:'row' , paddingHorizontal:10 , top:-5}]}>
                         <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
                             <Image source={require('../../assets/images/white_right.png')} style={[styles.headerNoti, styles.transform ]} resizeMode={'contain'} />
@@ -83,9 +113,7 @@ class ForgetPassword extends Component {
 
 
                             <View style={{ marginTop: 50 }}>
-                                <Button onPress={() => this.props.navigation.navigate('rePassword')} style={styles.loginBtn}>
-                                    <Text style={styles.btnTxt}>{ i18n.t('sendButton') }</Text>
-                                </Button>
+                                {this.renderSubmit()}
                             </View>
 
                         </View>

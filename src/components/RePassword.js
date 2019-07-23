@@ -13,7 +13,12 @@ import {
 } from "react-native";
 import {Container, Content, Form, Item, Input, Label, Button, Toast, Header} from 'native-base'
 import styles from '../../assets/styles'
-import i18n from "../../local/i18n";
+import i18n from "../../locale/i18n";
+import {DoubleBounce} from "react-native-loader";
+import axios from "axios";
+import CONST from "../consts";
+import {connect} from "react-redux";
+import {profile, userLogin} from "../actions";
 
 class RePassword extends Component {
     constructor(props){
@@ -25,10 +30,63 @@ class RePassword extends Component {
             code:null,
             password: '',
             rePassword: '',
+            verifyCode: this.props.navigation.state.params.code,
+            id: this.props.navigation.state.params.id,
         }
     }
 
+    componentWillMount() {
+        alert(this.state.verifyCode);
+    }
+    renderSubmit(){
+        if (this.state.isSubmitted){
+            return(
+                <DoubleBounce size={20} color="#0fd1fa" />
+            )
+        }
 
+        return (
+            <Button onPress={() => this.onCheckCode()} style={styles.loginBtn}>
+                <Text style={styles.btnTxt}>{ i18n.t('confirm') }</Text>
+            </Button>
+        );
+    }
+
+    onCheckCode(){
+
+
+
+
+        if (this.state.code != this.state.verifyCode ){
+            Toast.show({
+                text: i18n.t('codeNotCorrect'),
+                type: "danger",
+                duration: 3000
+            });
+            return false
+        }else if(this.state.password != this.state.rePassword){
+            Toast.show({
+                text: i18n.t('verifyPassword'),
+                type: "danger",
+                duration: 3000
+            });
+            return false
+        }
+
+        this.setState({ isSubmitted: true });
+        axios.post(CONST.url + 'renew_password' ,{
+            id: this.state.id,
+            password: this.state.password,
+            lang:this.props.lang
+        }).then(response => {
+            this.props.navigation.navigate('login');
+            Toast.show({
+                text: response.data.msg,
+                type: response.data.status === 200 ? "success" :"danger",
+                duration: 3000
+            });
+        })
+    }
     activeInput(type){
         if (type === 'code'){
             this.setState({ codeStatus: 1 })
@@ -79,7 +137,7 @@ class RePassword extends Component {
     render() {
         return (
             <Container style={styles.container}>
-                <Header style={[styles.header , { marginTop:0, height:Platform.OS === 'ios' ?70:60 , top:20 }]} noShadow>
+                <Header style={[styles.header , { marginTop:0, height:Platform.OS === 'ios' ?70:60 , top:40 }]} noShadow>
                     <View style={[styles.headerView , {flexDirection:'row' , paddingHorizontal:10 , top:-5}]}>
                         <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
                             <Image source={require('../../assets/images/white_right.png')} style={[styles.headerNoti, styles.transform ]} resizeMode={'contain'} />
@@ -122,9 +180,7 @@ class RePassword extends Component {
 
 
                             <View style={{ marginTop: 50 }}>
-                                <Button onPress={() => this.props.navigation.navigate('login')} style={styles.loginBtn}>
-                                    <Text style={styles.btnTxt}>{ i18n.t('confirm') }</Text>
-                                </Button>
+                                {this.renderSubmit()}
                             </View>
 
                         </View>
@@ -136,5 +192,9 @@ class RePassword extends Component {
     }
 }
 
-
-export default RePassword;
+const mapStateToProps = ({ lang }) => {
+    return {
+        lang: lang.lang
+    };
+};
+export default connect(mapStateToProps)(RePassword);

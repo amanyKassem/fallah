@@ -14,7 +14,7 @@ import {
 import {Container, Content, Button, Footer, Icon, Header, Toast, Form, Item, Textarea,Label, Input, Body} from 'native-base'
 import Styles from '../../assets/styles'
 import Modal from "react-native-modal";
-import i18n from "../../local/i18n";
+import i18n from "../../locale/i18n";
 import axios from "axios";
 import CONST from "../consts";
 import {connect} from "react-redux";

@@ -4,7 +4,7 @@ import { Container, Content, Button, Picker, Icon, Header , Left, Right, Body , 
 import Modal from "react-native-modal";
 import Styles from '../../assets/styles';
 import DateTimePicker from "react-native-modal-datetime-picker";
-import i18n from "../../local/i18n";
+import i18n from "../../locale/i18n";
 import axios from "axios";
 import CONST from "../consts";
 import {NavigationEvents} from "react-navigation";

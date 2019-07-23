@@ -666,7 +666,7 @@ const styles = ({
     },
     dateView:{
         width:60,
-        height:60 ,
+        minHeight:60 ,
         justifyContent:'center' ,
         alignItems:'center' ,
         borderRadius:5

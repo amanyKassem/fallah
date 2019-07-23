@@ -1,5 +1,5 @@
 import { I18nManager, AsyncStorage } from 'react-native';
-import i18n from '../../local/i18n';
+import i18n from '../../locale/i18n';
 import Expo from "expo";
 
 

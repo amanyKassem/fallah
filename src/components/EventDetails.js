@@ -17,7 +17,7 @@ import Swiper from 'react-native-swiper';
 import Styles from '../../assets/styles'
 import Modal from "react-native-modal";
 import DateTimePicker from "./Category";
-import i18n from "../../local/i18n";
+import i18n from "../../locale/i18n";
 import ImageViewer from 'react-native-image-zoom-viewer';
 import axios from "axios";
 import CONST from "../consts";
@@ -39,7 +39,8 @@ class EventDetails extends Component {
             fancyModal: false,
             event:[],
             images:[],
-            price:''
+            price:'',
+            ticketType:'normal'
         }
     }
 
@@ -108,10 +109,10 @@ class EventDetails extends Component {
     fancyModal = () => {
         this.setState({ fancyModal: !this.state.fancyModal });
     };
-    payOnlineModal = (price) => {
+    payOnlineModal = (price, type) => {
         this.setState({ payOnlineModal: !this.state.payOnlineModal });
         this.setState({ isModalVisible: !this.state.isModalVisible });
-        this.setState({ price});
+        this.setState({ price , ticketType:type});
     };
     onShare = async () => {
         try {
@@ -152,7 +153,48 @@ class EventDetails extends Component {
             );
         }
     }
+    renderTicketType(){
+            if(this.state.ticketType === 'normal'){
+                return(
+                    <TouchableOpacity onPress={() => this.payOnlineModal()} style={[Styles.imgText , {justifyContent:'space-between' , marginBottom:10 , backgroundColor:'#fffaee' , padding:10}]}>
+                        <View style={{flexDirection:'row'}}>
+                            <Image source={require('../../assets/images/red.png')} style={[Styles.leftImg , {width:40 , height:40 , top:0 , marginRight:5}]} resizeMode={'contain'} />
+                            <Text style={[Styles.eventText ,{fontSize:15 , top:3}]}>{ i18n.t('normalTicket') }</Text>
+                        </View>
+                        <View style={{flexDirection:'row'}}>
+                            <Text style={[Styles.eventText ,{fontSize:15 , top:3 , marginRight:5}]}>{this.state.event.normal}</Text>
+                            <Image source={require('../../assets/images/success.png')} style={[Styles.leftImg , {width:20 , height:20 , top:10 , marginRight:5}]} resizeMode={'contain'} />
+                        </View>
+                    </TouchableOpacity>
+                )
+            }else if(this.state.ticketType === 'vip'){
+                return(
+                    <TouchableOpacity onPress={() => this.payOnlineModal()} style={[Styles.imgText , {justifyContent:'space-between' , marginBottom:10 , backgroundColor:'#fffaee' , padding:10}]}>
+                        <View style={{flexDirection:'row'}}>
+                            <Image source={require('../../assets/images/purple.png')} style={[Styles.leftImg , {width:40 , height:40 , top:0 , marginRight:5}]} resizeMode={'contain'} />
+                            <Text style={[Styles.eventText ,{fontSize:15 , top:3}]}>{ i18n.t('vipTicket') }</Text>
+                        </View>
+                        <View style={{flexDirection:'row'}}>
+                            <Text style={[Styles.eventText ,{fontSize:15 , top:3 , marginRight:5}]}>{this.state.event.vip}</Text>
+                            <Image source={require('../../assets/images/success.png')} style={[Styles.leftImg , {width:20 , height:20 , top:10 , marginRight:5}]} resizeMode={'contain'} />
+                        </View>
+                    </TouchableOpacity>
+                )
+            }
+            return(
+                <TouchableOpacity onPress={() => this.payOnlineModal()} style={[Styles.imgText , {justifyContent:'space-between' , marginBottom:10 , backgroundColor:'#fffaee' , padding:10}]}>
+                    <View style={{flexDirection:'row'}}>
+                        <Image source={require('../../assets/images/yellow.png')} style={[Styles.leftImg , {width:40 , height:40 , top:0 , marginRight:5}]} resizeMode={'contain'} />
+                        <Text style={[Styles.eventText ,{fontSize:15 , top:3}]}>{ i18n.t('goldTicket') }</Text>
+                    </View>
+                    <View style={{flexDirection:'row'}}>
+                        <Text style={[Styles.eventText ,{fontSize:15 , top:3 , marginRight:5}]}>{this.state.event.gold}</Text>
+                        <Image source={require('../../assets/images/success.png')} style={[Styles.leftImg , {width:20 , height:20 , top:10 , marginRight:5}]} resizeMode={'contain'} />
+                    </View>
+                </TouchableOpacity>
+            )
 
+    }
     render() {
         const eventName = this.props.navigation.state.params.name;
         return (
@@ -184,7 +226,7 @@ class EventDetails extends Component {
                                 this.state.images.map((img,i) => (
                                     <TouchableOpacity onPress={() => this.fancyModal()} style={[Styles.slide , {borderBottomRightRadius:0}]}>
                                             <View style={Styles.swiperLine} />
-                                        <Image source={{ uri: img }} style={Styles.swiperimageEvent}
+                                        <Image source={{ uri: img.url }} style={Styles.swiperimageEvent}
                                                resizeMode={'cover'}/>
                                     </TouchableOpacity>
                                 ))
@@ -194,11 +236,13 @@ class EventDetails extends Component {
                         </Swiper>
                     </View>
                     <View style={[Styles.parentViewEvent , {height:'auto' , paddingRight:40 , marginTop:-70}]}>
-                        <View style={{flexDirection:'row'}}>
+                        <View style={{flexDirection:'row' , flexWrap:'wrap'}}>
                             <Text style={[Styles.eventboldName , {fontSize:16}]}>{eventName}</Text>
-                            <View style={[Styles.greenCircle , {backgroundColor : this.state.event.available ? "#a6d958" : "#f00"}]}></View>
-                            <Text style={[Styles.eventText , {fontSize:16 , marginRight:I18nManager.isRTL ?110 : 0 , marginLeft:I18nManager.isRTL ?0 : 110 }]}>{this.state.event.normal}</Text>
-                            <Text style={[Styles.eventText , {color:'#e51d6f' , fontSize:16}]}>{this.state.event.available? i18n.t('available') : i18n.t('notavailable')}</Text>
+                            <View style={{flexDirection:'row'}}>
+                                <View style={[Styles.greenCircle , {backgroundColor : this.state.event.available ? "#a6d958" : "#f00"}]}></View>
+                                <Text style={[Styles.eventText , {fontSize:16 , marginRight:I18nManager.isRTL ?'20%' : 0 , marginLeft:I18nManager.isRTL ?0 : '20%' }]}>{this.state.event.available? i18n.t('available') : i18n.t('notavailable')}</Text>
+                            </View>
+                           <Text style={[Styles.eventText , {color:'#e51d6f' , fontSize:16}]}>{this.state.event.normal}</Text>
                         </View>
                         <View style={{flexDirection:'column' , marginTop:10}}>
                             <View style={Styles.imgText}>
@@ -227,21 +271,21 @@ class EventDetails extends Component {
                             <Text style={[Styles.eventText ,{fontSize:16 , alignSelf:'center'}]}>{ i18n.t('chooseTicket') }</Text>
                             <View style={Styles.modalLine}></View>
                             <View style={{flexDirection:'column'}}>
-                                <TouchableOpacity  onPress={() => this.payOnlineModal(this.state.event.vip)} style={[Styles.imgText , {justifyContent:'space-between'}]}>
+                                <TouchableOpacity  onPress={() => this.payOnlineModal(this.state.event.vip , 'vip')} style={[Styles.imgText , {justifyContent:'space-between'}]}>
                                     <View style={{flexDirection:'row'}}>
                                         <Image source={require('../../assets/images/purple.png')} style={[Styles.leftImg , {width:40 , height:40 , top:-5 , marginRight:5}]} resizeMode={'contain'} />
                                         <Text style={[Styles.eventText ,{fontSize:15}]}>{ i18n.t('vipTicket') }</Text>
                                     </View>
                                     <Text style={[Styles.eventText ,{fontSize:15}]}>{this.state.event.vip}</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity onPress={() => this.payOnlineModal(this.state.event.gold)} style={[Styles.imgText , {marginVertical:20 , justifyContent:'space-between'}]}>
+                                <TouchableOpacity onPress={() => this.payOnlineModal(this.state.event.gold , 'gold')} style={[Styles.imgText , {marginVertical:20 , justifyContent:'space-between'}]}>
                                     <View style={{flexDirection:'row'}}>
                                         <Image source={require('../../assets/images/yellow.png')} style={[Styles.leftImg , {width:40 , height:40 , top:-5 , marginRight:5}]} resizeMode={'contain'} />
                                         <Text style={[Styles.eventText ,{fontSize:15}]}>{ i18n.t('goldTicket') }</Text>
                                     </View>
                                     <Text style={[Styles.eventText ,{fontSize:15}]}>{this.state.event.gold}</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity  onPress={() => this.payOnlineModal(this.state.event.normal)} style={[Styles.imgText , {justifyContent:'space-between'}]}>
+                                <TouchableOpacity  onPress={() => this.payOnlineModal(this.state.event.normal , 'normal')} style={[Styles.imgText , {justifyContent:'space-between'}]}>
                                     <View style={{flexDirection:'row'}}>
                                         <Image source={require('../../assets/images/red.png')} style={[Styles.leftImg , {width:40 , height:40 , top:-5 , marginRight:5}]} resizeMode={'contain'} />
                                         <Text style={[Styles.eventText ,{fontSize:15}]}>{ i18n.t('normalTicket') }</Text>
@@ -258,16 +302,10 @@ class EventDetails extends Component {
                             <Image source={require('../../assets/images/online_payment.png')} style={[Styles.leftImg , {width:40 , height:40 , top:0 , marginRight:0 , alignSelf:'center'}]} resizeMode={'contain'} />
                             <Text style={[Styles.eventText ,{fontSize:16 , alignSelf:'center'}]}>{ i18n.t('payOnline') }</Text>
                             <View style={Styles.modalLine}></View>
-                            <TouchableOpacity onPress={() => this.payOnlineModal()} style={[Styles.imgText , {justifyContent:'space-between' , marginBottom:10 , backgroundColor:'#fffaee' , padding:10}]}>
-                                <View style={{flexDirection:'row'}}>
-                                    <Image source={require('../../assets/images/yellow.png')} style={[Styles.leftImg , {width:40 , height:40 , top:0 , marginRight:5}]} resizeMode={'contain'} />
-                                    <Text style={[Styles.eventText ,{fontSize:15 , top:3}]}>{ i18n.t('goldTicket') }</Text>
-                                </View>
-                                <View style={{flexDirection:'row'}}>
-                                    <Text style={[Styles.eventText ,{fontSize:15 , top:3 , marginRight:5}]}>{this.state.event.gold}</Text>
-                                    <Image source={require('../../assets/images/success.png')} style={[Styles.leftImg , {width:20 , height:20 , top:10 , marginRight:5}]} resizeMode={'contain'} />
-                                </View>
-                            </TouchableOpacity>
+
+
+                            {this.renderTicketType()}
+
                             <View style={[Styles.filterPayModal ,{flexDirection:'row' , justifyContent:'space-between'}]}>
                                 <TouchableOpacity  style={Styles.imgText} onPress={() => this.payClick() }>
                                     <Image source={require('../../assets/images/visa.png')} style={[Styles.leftImg , {width:50 , height:50 , top:-5 , marginRight:5}]} resizeMode={'contain'} />
