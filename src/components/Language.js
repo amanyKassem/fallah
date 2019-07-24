@@ -44,12 +44,8 @@ class Language extends Component {
 }
 
 
-
-// const mapStateToProps = ({ auth, profile, lang }) => {
 const mapStateToProps = ({lang }) => {
     return {
-        // auth: auth.user,
-        // user: profile.user,
         lang: lang.lang
     };
 };

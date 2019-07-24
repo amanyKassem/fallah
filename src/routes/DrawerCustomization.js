@@ -4,6 +4,7 @@ import {Container, Content, Icon} from 'native-base';
 import {DrawerItems} from 'react-navigation';
 import {connect} from "react-redux";
 import i18n from "../../locale/i18n";
+import CONST from '../consts'
 import { logout, tempAuth } from '../actions'
 
 
@@ -46,7 +47,7 @@ class DrawerCustomization extends Component {
         let { user } = this.props;
         if (user === null)
             user = {
-                avatar: 'http://shams.arabsdesign.com/eBST-backend/images/users/default.png',
+                avatar:  CONST.url +'images/users/default.png',
                 name: i18n.t('guest')
             }
         return (
@@ -54,7 +55,7 @@ class DrawerCustomization extends Component {
                 <Content style={{backgroundColor:'#121320'}}>
                     <TouchableOpacity onPress={()=> this.props.navigation.navigate("profile")} style={{flex:1 , alignItems: 'center' , marginBottom:60, paddingTop:95}}>
                          <Image source={require('../../assets/images/bg_menu.png')} resizeMode={'contain'} style={{ width: '100%', height: 250 , position:'absolute' , top:15  }}/>
-                         <Image source={require('../../assets/images/profile_pic.png')} resizeMode={'cover'} style={{ width: 90, height: 90 , borderRadius:50 }}/>
+                         <Image source={{ uri: user.avatar }} resizeMode={'cover'} style={{ width: 90, height: 90 , borderRadius:50 }}/>
                         <Text style={{color:'#fff',  fontSize:17, fontFamily: 'RegularFont'}}>اماني قاسم</Text>
                     </TouchableOpacity>
                     <DrawerItems {...this.props}

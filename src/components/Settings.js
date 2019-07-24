@@ -19,7 +19,7 @@ import {connect} from "react-redux";
 import {DoubleBounce} from "react-native-loader";
 import axios from "axios";
 import CONST from "../consts";
-import {updateProfile} from "../actions";
+import {updateProfile , chooseLang} from "../actions";
 
 
 const height = Dimensions.get('window').height;
@@ -30,7 +30,7 @@ class Settings extends Component {
         this.state={
             isModalLangVisible: false,
             isModalPassVisible: false,
-            selectedLang: 'ar',
+            selectedLang: this.props.lang,
             SwitchOnValueHolder : false,
             currentPass: '',
             newPass: '',
@@ -38,7 +38,7 @@ class Settings extends Component {
             currentPassStatus:0,
             newPassStatus: 0,
             rePassStatus: 0,
-            isSubmitted: false
+            isSubmitted: false,
         }
     }
     activeInput(type){
@@ -67,9 +67,23 @@ class Settings extends Component {
 
     onChooseLang() {
         this.setState({ isModalLangVisible: !this.state.isModalLangVisible });
-        // if (this.props.lang != this.state.selectedLang){
-        //     this.props.chooseLang(this.state.selectedLang);
-        // }
+        axios({
+            method: 'POST',
+            url: CONST.url + 'set_lang',
+            headers: {Authorization: this.props.user.token},
+            data: {
+                lang: this.props.lang,
+            }
+        }).then(response => {
+            Toast.show({
+                text: response.data.msg,
+                type:  response.data.status == 200 ? "success" : "danger",
+                duration: 3000
+            });
+        })
+        if (this.props.lang != this.state.selectedLang){
+            this.props.chooseLang(this.state.selectedLang);
+        }
     };
     renderSubmit(){
         if (this.state.isSubmitted){
@@ -123,16 +137,35 @@ class Settings extends Component {
             });
         }
     };
+    componentWillMount() {
+        axios({
+            url: CONST.url + 'notification_status',
+            method: 'POST',
+            headers: this.props.user != null ? {Authorization: this.props.user.token} : null,
+            data: {lang: this.props.lang}
+        }).then(response => {
+            this.setState({
+                SwitchOnValueHolder: response.data.data.status,
+            })
+        })
+    }
     stopNotification = (value) =>{
-        this.setState({ SwitchOnValueHolder: value })
+        this.setState({  SwitchOnValueHolder:!this.state.SwitchOnValueHolder})
 
-        // console.log('swiper val ...', value, this.state.SwitchOnValueHolder);
-        // axios({
-        //     method: 'POST',
-        //     url: CONST.url + 'stop_notifications',
-        //     headers: {Authorization: this.props.user.token} })
+        axios({
+            method: 'POST',
+            url: CONST.url + 'stop_notifications',
+            headers: this.props.user != null ? {Authorization: this.props.user.token} : null,})
+            .then(response => {
+                Toast.show({
+                    text: response.data.msg,
+                    type: response.data.status == 200 ? "success" : "danger",
+                    duration: 3000
+                });
+            })
     }
     render() {
+        console.log('SwitchOnValueHolder' , this.state.SwitchOnValueHolder)
         return (
 
             <Container style={{backgroundColor:'#fff'}}>
@@ -255,4 +288,4 @@ const mapStateToProps = ({ profile, lang }) => {
     };
 };
 
-export default connect(mapStateToProps, {updateProfile})(Settings);
+export default connect(mapStateToProps, {updateProfile , chooseLang})(Settings);

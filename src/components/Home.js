@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import {View, Text, Image, TouchableOpacity, I18nManager, FlatList, Platform, Dimensions} from "react-native";
+import {View, Text, Image, TouchableOpacity, I18nManager, FlatList, Platform, Dimensions, ScrollView} from "react-native";
 import { Container, Content, Icon, Header  , List, ListItem , Left , Button} from 'native-base'
 import Swiper from 'react-native-swiper';
 import FooterSection from './Footer';
@@ -32,13 +32,13 @@ class Home extends Component {
             isModalVisible: false,
             fancyModal: false,
             showDeleteMsg:false,
-            navbarColor: 'transparent',
-            scrollY: 0,
             adsImgs:[],
             status: null,
             mute: true,
             shouldPlay: false,
             imgUri: null,
+            notifications:[],
+            deleteMsg:''
         }
     }
     handlePlayAndPause = () => {
@@ -63,6 +63,17 @@ class Home extends Component {
         }).then(response => {
             this.setState({
                 categories: response.data.data,
+                status: response.data.status,
+            })
+        })
+        axios({
+            url: CONST.url + 'notifications',
+            method: 'POST',
+            headers: this.props.user != null ? {Authorization: this.props.user.token} : null,
+            data: {lang: this.props.lang}
+        }).then(response => {
+            this.setState({
+                notifications: response.data.data,
                 status: response.data.status,
             })
         })
@@ -97,15 +108,27 @@ class Home extends Component {
         );
     }
 
-    deleteNoti(){
+    deleteNoti(id){
         this.setState({ showDeleteMsg: !this.state.showDeleteMsg });
+        axios({
+            url: CONST.url + 'delete_notification',
+            method: 'POST',
+            headers: this.props.user != null ? {Authorization: this.props.user.token} : null,
+            data: {lang: this.props.lang, notify_id: id}
+        }).then(response => {
+            this.setState({
+                deleteMsg: response.data.msg,
+                status: response.data.status,
+            })
+            this.componentWillMount()
+        })
     }
     renderDeleteMsg(){
         if (this.state.showDeleteMsg){
             return(
                 <Animatable.View onAnimationEnd={() => this.setState({ showDeleteMsg: !this.state.showDeleteMsg })} animation="fadeOut" duration={5000} style={[Styles.filterModal,{padding:15 , backgroundColor:'#121320' , justifyContent:'center'}]}>
                     <View style={Styles.viewLine}></View>
-                    <Text style={{ color: '#fff', fontFamily: 'BoldFont' , fontSize:13, writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr' }}>{ i18n.t('notificationDeleted') }</Text>
+                    <Text style={{ color: '#fff', fontFamily: 'BoldFont' , fontSize:13, writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr' }}>{ this.state.deleteMsg }</Text>
                 </Animatable.View>
             )
         }
@@ -149,7 +172,7 @@ class Home extends Component {
         }
 
         return(
-        <Content style={[Styles.homecontent , {} ]} onScroll={e => console.log('ppppppppp...',e.nativeEvent.contentOffset.y)}>
+        <Content style={[Styles.homecontent , {} ]} >
 
             <View>
                 <Swiper key={this.state.adsImgs.length} dotStyle={Styles.doteStyle} activeDotStyle={Styles.activeDot}
@@ -207,34 +230,79 @@ class Home extends Component {
                 />
             </View>
             <Modal style={{}} isVisible={this.state.isModalVisible} onBackdropPress={() => this.toggleModal()}>
-                <View style={[Styles.filterModal,{padding:15}]}>
+                <View style={[Styles.filterModal,{padding:15 , height:450}]}>
                     <View style={Styles.viewLine}></View>
                     <Text style={[Styles.eventboldName ,{fontSize:16 , alignSelf:'center' , marginBottom:10}]}>{ i18n.t('notifications') }</Text>
-                    <View style={{flexDirection:'column'}}>
+                    <ScrollView style={{flexDirection:'column'}}>
                         <List style={{width:'100%'}}>
-                            <ListItem style={{ borderRadius: 5, borderBottomWidth: 1, borderColor: '#bbbcbd', width: '97%', marginLeft: 0, marginBottom: 15 , paddingTop:0, paddingBottom:0 , paddingRight:0 }}>
-                                <View  style={{ width:'100%' , padding:15}}>
-                                    <View style={{ width:'100%' }}>
-                                        <View style={{flexDirection:'row' , justifyContent:'space-between' , width:'100%'}}>
-                                            <View style={{flexDirection:'row'}}>
-                                                <Image source={require('../../assets/images/pink_shape.png')} style={{ width: 15, height: 15 , right:10 , top:7}} resizeMode={'contain'}/>
-                                                <Text style={{ color: '#6d6c72', fontFamily: 'BoldFont' , fontSize:13 }}>رسالة من لوحة التحكم</Text>
+
+                            {
+                                this.state.notifications.map((noti, i) => {
+                                    return(
+                                    <ListItem key={i} style={{
+                                        borderRadius: 5,
+                                        borderBottomWidth: 1,
+                                        borderColor: '#bbbcbd',
+                                        width: '97%',
+                                        marginLeft: 0,
+                                        marginBottom: 15,
+                                        paddingTop: 0,
+                                        paddingBottom: 0,
+                                        paddingRight: 0
+                                    }}>
+                                        <View style={{width: '100%', padding: 15}}>
+                                            <View style={{width: '100%'}}>
+                                                <View style={{
+                                                    flexDirection: 'row',
+                                                    justifyContent: 'space-between',
+                                                    width: '100%'
+                                                }}>
+                                                    <View style={{flexDirection: 'row'}}>
+                                                        <Image source={i % 2 === 0 ? require('../../assets/images/pink_shape.png') : require('../../assets/images/blue_shape.png')}
+                                                               style={{width: 15, height: 15, right: 10, top: 7}}
+                                                               resizeMode={'contain'}/>
+                                                        <Text style={{
+                                                            color: '#6d6c72',
+                                                            fontFamily: 'BoldFont',
+                                                            fontSize: 13
+                                                        }}>{noti.title}</Text>
+                                                    </View>
+                                                    <Text style={{
+                                                        color: '#acabae',
+                                                        fontFamily: 'RegularFont',
+                                                        fontSize: 13
+                                                    }}>{noti.time}</Text>
+                                                </View>
+                                                <View style={{width: '100%', paddingLeft: 15}}>
+                                                    <Text style={{
+                                                        color: '#acabae',
+                                                        fontFamily: 'RegularFont',
+                                                        fontSize: 12,
+                                                        writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr',
+                                                        textAlign: I18nManager.isRTL ? 'right' : 'left',
+                                                        alignSelf:'flex-start'
+                                                    }}>{noti.body}</Text>
+                                                </View>
                                             </View>
-                                            <Text style={{ color: '#acabae', fontFamily: 'RegularFont', fontSize:13 }}>3:00 مساءا</Text>
                                         </View>
-                                        <View style={{width:'100%' , paddingLeft:15}}>
-                                            <Text style={{ color: '#acabae', fontFamily: 'RegularFont' , fontSize:12 , writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr' , textAlign:I18nManager.isRTL ?  'right':'left' }}>نص نص نص نص نص نص نص نص نص نص نص نص نص نص نص نص نص نص نص نص نص نص نص نص</Text>
-                                        </View>
-                                    </View>
-                                </View>
-                                <Left style={{ position: 'absolute', right: -13, top: -13 }}>
-                                    <TouchableOpacity  onPress={() => this.deleteNoti()} style={{ backgroundColor: 'transparent', alignItems: 'center', justifyContent: 'center', width: 35, height: 35 }}>
-                                        <Icon type={'AntDesign'} name={'delete'} style={{ fontSize: 20, color: '#e51d6f' }} />
-                                    </TouchableOpacity>
-                                </Left>
-                            </ListItem>
+                                        <Left style={{position: 'absolute', right: -13, top: -13}}>
+                                            <TouchableOpacity onPress={() => this.deleteNoti(noti.id)} style={{
+                                                backgroundColor: 'transparent',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                width: 35,
+                                                height: 35
+                                            }}>
+                                                <Icon type={'AntDesign'} name={'delete'}
+                                                      style={{fontSize: 20, color: '#e51d6f'}}/>
+                                            </TouchableOpacity>
+                                        </Left>
+                                    </ListItem>
+                                    )
+                                })
+                            }
                         </List>
-                    </View>
+                    </ScrollView>
                 </View>
 
                 {this.renderDeleteMsg()}
@@ -286,7 +354,7 @@ class Home extends Component {
     )}
 
     render() {
-        console.log('scrolling.....', this.state.scrollY);
+        console.log('notiiiiii.....', this.state.notification , this.props.user.id);
 
         return (
 
@@ -297,16 +365,16 @@ class Home extends Component {
             {/*</Header>*/}
                 <ReactNativeParallaxHeader
                     headerMinHeight={HEADER_HEIGHT}
-                    headerMaxHeight={100}
-                    extraScrollHeight={20}
-                    navbarColor={this.state.scrollY >= 220 ? '#121320' : 'transparent'}
+                    headerMaxHeight={70}
+                    extraScrollHeight={80}
+                    navbarColor={ '#12132085'}
                     backgroundColor='transparent'
-                    statusBarColor='red'
+                    statusBarColor='transparent'
                     headerTitleStyle={{ backgroundColor: 'transparent' }}
                     containerStyle={{ backgroundColor: 'transparent' }}
                     scrollViewStyle={{ backgroundColor: 'transparent' }}
                     innerContainerStyle={{ backgroundColor: 'transparent' }}
-                    backgroundImage={'https://avatars2.githubusercontent.com/u/7970947?v=3&s=460'}
+                    // backgroundImage={'https://avatars2.githubusercontent.com/u/7970947?v=3&s=460'}
                     titleStyle={{ backgroundColor: 'transparent' }}
                     renderNavBar={this.renderNavBar}
                     renderContent={this.renderContent}
@@ -320,9 +388,10 @@ class Home extends Component {
     }
 }
 
-const mapStateToProps = ({ lang }) => {
+const mapStateToProps = ({ lang , profile}) => {
     return {
-        lang: lang.lang
+        lang: lang.lang,
+        user: profile.user,
     };
 };
 export default connect(mapStateToProps, {})(Home);

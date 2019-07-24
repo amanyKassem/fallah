@@ -6,9 +6,6 @@ import Styles from '../../assets/styles'
 import i18n from "../../locale/i18n";
 import {connect} from "react-redux";
 import {updateProfile} from "../actions";
-// import axios from 'axios'
-// import CONST from '../consts'
-// import { Bars } from 'react-native-loader';
 
 
 const height = Dimensions.get('window').height;
