@@ -6,6 +6,7 @@ import Styles from '../../assets/styles'
 import i18n from "../../locale/i18n";
 import {connect} from "react-redux";
 import {updateProfile} from "../actions";
+import {NavigationEvents} from "react-navigation";
 
 
 const height = Dimensions.get('window').height;
@@ -46,6 +47,7 @@ class Profile extends Component {
             this.setState({mailStatus: 0})
         }
     }
+
     render() {
         return (
 
@@ -68,7 +70,6 @@ class Profile extends Component {
                 <Content style={Styles.homecontent}>
                     <View style={[Styles.eventswiper ,  {backgroundColor:'#121320' , height:400}]}>
                         <Image source={{uri:this.props.user.avatar}} style={[Styles.eventswiper , {height:400}]} resizeMode={'cover'} />
-
                     </View>
 
                     <View style={[Styles.parentViewEvent , {height:'auto' , paddingHorizontal:30 , marginTop:-110 , borderTopLeftRadius:75 }]}>
@@ -76,20 +77,20 @@ class Profile extends Component {
                             <View style={[Styles.inputParent , {borderColor: '#acabae'}]}>
                                 <Item floatingLabel style={[Styles.item , {width:'100%'}]} bordered>
                                     <Label style={[Styles.labelItem , {color: '#acabae' , fontSize:16 , top:-11}]}>{ i18n.t('username') }</Label>
-                                    <Input disabled={true} value={this.state.name} onChangeText={(name) => this.setState({ name })} auto-capitalization={false} onBlur={() => this.unActiveInput('name')} onFocus={() => this.activeInput('name')} style={Styles.itemInput}/>
+                                    <Input disabled={true} value={this.props.user.name} onChangeText={(name) => this.setState({ name })} auto-capitalization={false} onBlur={() => this.unActiveInput('name')} onFocus={() => this.activeInput('name')} style={Styles.itemInput}/>
                                 </Item>
                             </View>
                             <View style={[ Styles.inputParent ,{ borderColor:  '#acabae'  }]}>
                                 <Item floatingLabel style={[Styles.item , {width:'100%'}]} bordered>
                                     <Label style={[Styles.labelItem ,{ color: '#acabae' , fontSize:16 , top:-11 }]}>{ i18n.t('phoneNumber') }</Label>
-                                    <Input disabled={true} value={this.state.phone} onChangeText={(phone) => this.setState({phone})} keyboardType={'number-pad'} onBlur={() => this.unActiveInput('phone')} onFocus={() => this.activeInput('phone')} style={Styles.itemInput}  />
+                                    <Input disabled={true} value={this.props.user.phone} onChangeText={(phone) => this.setState({phone})} keyboardType={'number-pad'} onBlur={() => this.unActiveInput('phone')} onFocus={() => this.activeInput('phone')} style={Styles.itemInput}  />
                                 </Item>
                             </View>
 
                             <View style={[ Styles.inputParent ,{ borderColor: '#acabae' }]}>
                                 <Item floatingLabel style={[Styles.item , {width:'100%'}]} bordered>
                                     <Label style={[Styles.labelItem ,{ color:'#acabae' , fontSize:16 , top:-11}]}>{ i18n.t('email') }</Label>
-                                    <Input disabled={true} value={this.state.mail} onChangeText={(mail) => this.setState({mail})} keyboardType={'email-address'} onBlur={() => this.unActiveInput('mail')} onFocus={() => this.activeInput('mail')} style={Styles.itemInput}  />
+                                    <Input disabled={true} value={this.props.user.email} onChangeText={(mail) => this.setState({mail})} keyboardType={'email-address'} onBlur={() => this.unActiveInput('mail')} onFocus={() => this.activeInput('mail')} style={Styles.itemInput}  />
                                 </Item>
                             </View>
 

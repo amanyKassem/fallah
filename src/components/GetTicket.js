@@ -32,7 +32,8 @@ class GetTicket extends Component {
 
         this.state={
             ticket:[],
-            status:null
+            status:null,
+            isSubmitted: false,
         }
     }
     static navigationOptions = () => ({
@@ -58,7 +59,7 @@ class GetTicket extends Component {
     renderLoader(){
         if (this.state.status === null){
             return(
-                <View style={{ alignItems: 'center', justifyContent: 'center', height: height + 100, alignSelf:'center' , backgroundColor:'#fff' , width:'100%'  , position:'absolute' , zIndex:1 }}>
+                <View style={{ alignItems: 'center', justifyContent: 'center', height: height + 100, alignSelf:'center' , backgroundColor:'#121320' , width:'100%'  , position:'absolute' , zIndex:1 }}>
                     <DoubleBounce size={20} color="#0fd1fa" />
                 </View>
             );
@@ -67,6 +68,7 @@ class GetTicket extends Component {
     deleteTicket(){
         const ticketId = this.props.navigation.state.params.id;
 
+        this.setState({ isSubmitted: true });
         axios({
             url: CONST.url + 'delete_ticket',
             method: 'POST',
@@ -78,9 +80,31 @@ class GetTicket extends Component {
                 type: response.data.status === 200 ? "success" : "danger",
                 duration: 3000
             });
+            this.setState({ isSubmitted: false });
             this.props.navigation.navigate('home')
         })
     }
+
+
+    renderSubmit(){
+        if (this.state.isSubmitted){
+            return(
+                <View style={{justifyContent:'center' , alignItems:'center', width:'50%', flex:1}}>
+                    <DoubleBounce size={20} color="#26b5c4" style={{alignSelf: 'center' , width:'100%'}}/>
+                </View>
+            )
+        }
+
+            return (
+                <TouchableOpacity onPress={ () => this.deleteTicket()} style={[Styles.confirmBtn , {backgroundColor:'#fff' , borderColor:'#e51d6f' , borderWidth:1 , borderBottomWidth:0}]}  >
+                    <Text style={{color:'#e51d6f' , fontFamily: 'RegularFont' , fontSize:16}}>{ i18n.t('deleteTicket') }</Text>
+                </TouchableOpacity>
+            );
+    }
+
+
+
+
     onFocus(payload){
         console.log('this is onWillFocus', payload)
         this.setState({ status: null });
@@ -105,7 +129,7 @@ class GetTicket extends Component {
 
                     <View style={Styles.QR}>
                         <QRCode
-                            value={this.state.ticket.booking_id}
+                            value={CONST.domain + 'qr_details' + '/' + this.state.ticket.booking_id}
                             size={80}
                             bgColor='#000'
                             fgColor='white'/>
@@ -150,13 +174,11 @@ class GetTicket extends Component {
 
                     <View style={[Styles.modalLine ]}></View>
                     <View style={{ paddingLeft:10, paddingBottom:10 ,paddingRight:40 }}>
-                        <Text style={[Styles.eventText , { fontSize:16 , marginBottom:100 , writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr'}]}>{ i18n.t('process') }</Text>
+                        <Text style={[Styles.eventText , { fontSize:16 , marginBottom:100 , writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr' , alignSelf: 'flex-start'}]}>{ i18n.t('process') }</Text>
                     </View>
                 </Content>
                 <View style={[Styles.btnParent ,{marginTop:0 , backgroundColor:'#fff' , height:45}]} >
-                    <TouchableOpacity onPress={ () => this.deleteTicket()} style={[Styles.confirmBtn , {backgroundColor:'#fff' , borderColor:'#e51d6f' , borderWidth:1 , borderBottomWidth:0}]}  >
-                        <Text style={{color:'#e51d6f' , fontFamily: 'RegularFont' , fontSize:16}}>{ i18n.t('deleteTicket') }</Text>
-                    </TouchableOpacity>
+                    {this.renderSubmit()}
                 </View>
             </Container>
 

@@ -80,7 +80,8 @@ class Settings extends Component {
                 type:  response.data.status == 200 ? "success" : "danger",
                 duration: 3000
             });
-        })
+        });
+
         if (this.props.lang != this.state.selectedLang){
             this.props.chooseLang(this.state.selectedLang);
         }

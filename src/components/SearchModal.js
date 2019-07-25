@@ -22,31 +22,18 @@ class SearchModal extends Component {
             visibleModal:false,
             status:null,
             searchResult:[],
+            search:'',
             loader:false
         }
     }
 
 
     componentWillReceiveProps(nextProps){
-        console.log(nextProps)
+     //   console.log(nextProps)
         this.setState({visibleModal:nextProps.isModalVisible})
     }
 
 
-
-    search(search){
-        axios({
-            url: CONST.url + 'search',
-            method: 'POST',
-            data: { lang: this.props.lang , search }
-        }).then(response => {
-            this.setState({
-                searchResult: response.data.data,
-                status: response.data.status,
-                loader:false
-            })
-        })
-    }
 
     renderSearchResult(){
         if(this.state.loader){
@@ -67,6 +54,11 @@ class SearchModal extends Component {
         }
     }
 
+    closeSearch(){
+        this.setState({ visibleModal : false});
+        this.props.navigation.navigate('searchResult', { search : this.state.search } );
+    }
+
     render() {
         return (
             <Modal avoidKeyboard={true} coverScreen={false} style={{}} deviceHeight={height-140} isVisible={this.state.visibleModal} onBackdropPress={() => this.setState({ visibleModal: this.props.footer_searchModal('home') })}>
@@ -74,15 +66,15 @@ class SearchModal extends Component {
                     <View style={Styles.viewLine}></View>
                     <View style={Styles.inputView}>
                         <Item  style={Styles.inputItem} bordered>
-                            <Input onChangeText={(search) => this.search(search)} placeholder={ i18n.t('search') } placeholderTextColor={'#acabae'} style={Styles.modalInput}   />
+                            <Input onSubmitEditing={() => this.closeSearch() } onChangeText={(search) => this.setState({ search })} placeholder={ i18n.t('search') } placeholderTextColor={'#acabae'} style={Styles.modalInput}   />
                         </Item>
                         <Image source={require('../../assets/images/gray_search.png')} style={Styles.searchImg} resizeMode={'contain'}/>
                     </View>
                     {/*<SvgUri width="25" height="25" fill={'#f00'} source={require("../../assets/images/search.svg")} />*/}
 
-                    {/*<ScrollView style={{flex:1 , width:'100%' }}>*/}
-                        {/*{this.renderSearchResult()}*/}
-                    {/*</ScrollView>*/}
+                    <ScrollView style={{flex:1 , width:'100%' }}>
+                        {this.renderSearchResult()}
+                    </ScrollView>
                     <View style={Styles.modalLine}></View>
 
                     <TouchableOpacity onPress={() => this.props.navigation.navigate('suggestedEvent', this.setState({visibleModal:this.state.isModalVisible}))}  style={Styles.eventTouch}>

@@ -54,7 +54,8 @@ class EventDetails extends Component {
             axios({
                 url: CONST.url + 'event_details',
                 method: 'POST',
-                data: {id: eventId , lang: this.props.lang , device_id: deviceID}
+				headers: this.props.user != null ? {Authorization: this.props.user.token} : null,
+                data: {id: eventId , lang: this.props.lang , device_id: deviceID},
             }).then(response => {
                 this.setState({
                     event: response.data.data,
@@ -87,10 +88,12 @@ class EventDetails extends Component {
                 method: 'POST',
                 headers: this.props.user != null ? {Authorization: this.props.user.token} : null,
                 data: {id: eventId, device_id: deviceID, lang: this.props.lang , price : this.state.price}
+            }).then(response => {
+
+                this.props.navigation.navigate('confirmPayment' , {id:response.data.data.booking_id}) ;
+                this.setState({ payOnlineModal: !this.state.payOnlineModal })
             })
         })
-        this.props.navigation.navigate('confirmPayment') ;
-        this.setState({ payOnlineModal: !this.state.payOnlineModal })
 
     }
 
@@ -147,7 +150,7 @@ class EventDetails extends Component {
     renderLoader(){
         if (this.state.status === null){
             return(
-                <View style={{ alignItems: 'center', justifyContent: 'center', height: height + 100, alignSelf:'center' , backgroundColor:'#fff' , width:'100%'  , position:'absolute' , zIndex:1 }}>
+                <View style={{ alignItems: 'center', justifyContent: 'center', height: height + 100, alignSelf:'center' , backgroundColor:'#121320' , width:'100%'  , position:'absolute' , zIndex:1 }}>
                     <DoubleBounce size={20} color="#0fd1fa" />
                 </View>
             );
@@ -199,6 +202,7 @@ class EventDetails extends Component {
         const eventName = this.props.navigation.state.params.name;
         return (
             <Container style={{backgroundColor:'#fff'}}>
+                { this.renderLoader() }
                 <NavigationEvents onWillFocus={payload => this.onFocus(payload)} />
                 <Header style={[Styles.header , {marginTop:Platform.OS === 'ios' ?15:40}]} noShadow>
                     <View style={[Styles.headerView , {flexDirection:'row'}]}>
@@ -218,7 +222,6 @@ class EventDetails extends Component {
                     </View>
                 </Header>
                 <Content style={Styles.homecontent}>
-                    { this.renderLoader() }
                     <View>
                         <Swiper dotStyle={Styles.eventdoteStyle} activeDotStyle={Styles.eventactiveDot}
                                 containerStyle={Styles.eventswiper} showsButtons={false} autoplay={true}>
@@ -310,10 +313,10 @@ class EventDetails extends Component {
                                 <TouchableOpacity  style={Styles.imgText} onPress={() => this.payClick() }>
                                     <Image source={require('../../assets/images/visa.png')} style={[Styles.leftImg , {width:50 , height:50 , top:-5 , marginRight:5}]} resizeMode={'contain'} />
                                 </TouchableOpacity>
-                                <TouchableOpacity style={Styles.imgText}>
+                                <TouchableOpacity style={Styles.imgText} onPress={() => this.payClick()}>
                                     <Image source={require('../../assets/images/sadad.png')} style={[Styles.leftImg , {width:50 , height:50 , top:-5 , marginRight:5}]} resizeMode={'contain'} />
                                 </TouchableOpacity>
-                                <TouchableOpacity style={Styles.imgText}>
+                                <TouchableOpacity style={Styles.imgText} onPress={() => this.payClick()}>
                                     <Image source={require('../../assets/images/mada.png')} style={[Styles.leftImg , {width:50 , height:50 , top:-5 , marginRight:5}]} resizeMode={'contain'} />
                                 </TouchableOpacity>
                             </View>

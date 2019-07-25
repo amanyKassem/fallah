@@ -45,7 +45,7 @@ class ConfirmPayment extends Component {
 
                 </Content>
                 <View style={[Styles.btnParent ,{marginTop:0 , backgroundColor:'#fff'}]} >
-                    <TouchableOpacity  style={Styles.confirmBtn}  onPress={() => this.props.navigation.navigate('getTicket' , {id:13})}>
+                    <TouchableOpacity  style={Styles.confirmBtn}  onPress={() => this.props.navigation.navigate('getTicket' , {id:this.props.navigation.state.params.id})}>
                         <Text style={{color:'#fff' , fontFamily: 'RegularFont' , fontSize:16}}>{ i18n.t('ticket') }</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={Styles.cancelBtn} onPress={() => this.props.navigation.navigate('home')}>

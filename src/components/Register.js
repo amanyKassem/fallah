@@ -198,13 +198,13 @@ class Register extends Component {
     render() {
         return (
             <Container style={styles.container}>
-                <Header style={[styles.header , { marginTop:0, height:Platform.OS === 'ios' ?70:60 , top:40 }]} noShadow>
+                <View style={[styles.header , { marginTop: Platform.OS === 'ios' ? 40 : 10, height:Platform.OS === 'ios' ?70:60 , top:Platform.OS === 'ios' ? 10 : 40 , backgroundColor: 'transparent', position: 'absolute', width: '100%' }]} noShadow>
                     <View style={[styles.headerView , {flexDirection:'row' , paddingHorizontal:10 , top:-5}]}>
                         <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
-                            <Image source={require('../../assets/images/white_right.png')} style={[styles.headerNoti, styles.transform ]} resizeMode={'contain'} />
+                            <Image source={require('../../assets/images/white_right.png')} style={[styles.headerNoti, styles.transform, { transform: I18nManager.isRTL ? [{rotateY : '0deg'}] : [{rotateY : '-180deg'}] } ]} resizeMode={'contain'} />
                         </TouchableOpacity>
                     </View>
-                </Header>
+                </View>
                 <Content contentContainerStyle={{ flexGrow: 1 , top:-1 }}>
                     <KeyboardAvoidingView behavior={'padding'} style={{width:'100%', height: null, flex: 1,}}>
                     <ImageBackground source={require('../../assets/images/background.png')} resizeMode={'cover'} style={styles.imageBackgroundStyle}>
@@ -268,8 +268,8 @@ class Register extends Component {
                     </ImageBackground>
                     </KeyboardAvoidingView>
                 </Content>
-                <View style={[styles.btnParent ,{marginTop:0 , backgroundColor:'#121320'}]} >
-                    <TouchableOpacity  style={styles.registerBtn}  onPress={() => this.props.navigation.navigate('login')}>
+                <View style={[styles.btnParent ,{marginTop:0 , backgroundColor:'transparent', position: 'absolute', width: '100%', bottom: 0}]} >
+                    <TouchableOpacity  style={[styles.registerBtn, { backgroundColor: '#121320' }]}  onPress={() => this.props.navigation.navigate('login')}>
                         <Text style={styles.registerTxt}>{ i18n.t('loginButton') }</Text>
                     </TouchableOpacity>
                 </View>

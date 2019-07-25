@@ -30,6 +30,7 @@ import CommonEvent from "../components/CommonEvent";
 import SavedEvent from "../components/SavedEvent";
 import InitScreen from "../components/InitScreen";
 import Organizations from "../components/Organizations";
+import SearchResult from "../components/SearchResult";
 import RNParallax from "../components/RNParallax";
 
 const drawerCust = (props) => (<DrawerCustomization {...props} />)
@@ -53,6 +54,7 @@ const DrawerNavigator = createDrawerNavigator({
     suggestedEvent:SuggestedEvent,
     commonEvent:CommonEvent,
     savedEvent:SavedEvent,
+    searchResult:SearchResult,
 
 },{
     initialRouteName:'home',
@@ -64,14 +66,6 @@ const DrawerNavigator = createDrawerNavigator({
     contentComponent:drawerCust
 })
 const AppNavigator = createStackNavigator({
-
-
-    // RNParallax: {
-    //     screen: RNParallax,
-    //     navigationOptions: {
-    //         header: null
-    //     }
-    // },
 
     initScreen: {
         screen: InitScreen,
@@ -94,6 +88,12 @@ const AppNavigator = createStackNavigator({
     },
     organizations: {
         screen: Organizations,
+        navigationOptions: {
+            header: null
+        }
+    },
+    searchResult: {
+        screen: SearchResult,
         navigationOptions: {
             header: null
         }
@@ -122,16 +122,12 @@ const AppNavigator = createStackNavigator({
             header: null
         }
     },
-
     intro: {
         screen: Intro,
         navigationOptions: {
             header: null
         }
     },
-
-
-
     profile: {
         screen: Profile,
         navigationOptions: {

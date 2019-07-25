@@ -18,6 +18,8 @@ import Styles from '../../assets/styles'
 import axios from "axios";
 import CONST from "../consts";
 import {connect} from "react-redux";
+import {NavigationEvents} from "react-navigation";
+import i18n from "../../locale/i18n";
 
 const height = Dimensions.get('window').height;
 
@@ -32,11 +34,12 @@ class SavedModel extends Component {
             savedItems:[]
         }
 
-        console.log(this.props)
+     //   console.log(this.props)
     }
 
     componentWillMount() {
         AsyncStorage.getItem('deviceID').then(deviceID => {
+            console.log('saves device id & token ..', deviceID, this.props.user.token);
             axios({
                 url: CONST.url + 'saves',
                 method: 'POST',
@@ -52,7 +55,6 @@ class SavedModel extends Component {
     }
 
     componentWillReceiveProps(nextProps){
-        console.log(nextProps)
         this.setState({visibleModal:nextProps.isModalVisible})
     }
 
@@ -78,11 +80,34 @@ class SavedModel extends Component {
         );
     }
 
+    componentDidMount() {
+        this.amany = [
+            this.props.navigation.addListener('willFocus', () => this.componentWillMount()),
+        ];
+    }
+
+    componentWillUnmount() {
+        this.amany.forEach((sub) => {
+            sub.remove();
+        });
+    }
+
+    renderNoData(){
+        if (this.state.savedItems.length === 0 && this.state.status != null){
+            return(
+                <View style={{ width: '100%', flex: 1, alignItems: 'center', justifyContent: 'center', height:height-200}}>
+                    <Image source={require('../../assets/images/no_data.png')} resizeMode={'contain'} style={{ width: 200, height: 200 }}/>
+                    <Text style={{ fontFamily: 'RegularFont', fontSize: 16, textAlign: "center", marginTop: 10, color: '#6d6c72' }}>{ i18n.t('noData') }</Text>
+                </View>
+            );
+        }
+    }
     render() {
         return (
             <Modal avoidKeyboard={true} coverScreen={false} style={{}} deviceHeight={height-140} isVisible={this.state.visibleModal} onBackdropPress={() => this.setState({ visibleModal: this.props.footer_savedModal('home') })}>
                 <View style={[Styles.searchModal , {height:height-200}]}>
                     <View style={Styles.viewLine}></View>
+                        { this.renderNoData() }
                     <FlatList
                         data={this.state.savedItems}
                         renderItem={({item}) => this.renderItems(item)}

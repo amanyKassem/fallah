@@ -203,7 +203,7 @@ class Category extends Component {
     renderLoader(){
         if (this.state.status === null){
             return(
-                <View style={{ alignItems: 'center', justifyContent: 'center', height: height + 100, alignSelf:'center' , backgroundColor:'#fff' , width:'100%' , position:'absolute' , zIndex:1  }}>
+                <View style={{ alignItems: 'center', justifyContent: 'center', height: height + 100, alignSelf:'center' , backgroundColor:'#121320' , width:'100%' , position:'absolute' , zIndex:1  }}>
                     <DoubleBounce size={20} color="#0fd1fa" />
                 </View>
             );
@@ -263,7 +263,7 @@ class Category extends Component {
                                             placeholderStyle={{ color: "#acabae" }}
                                             placeholder={i18n.t('city')}
                                             placeholderIconColor="#acabae"
-                                            textStyle={{ color: "#acabae" , right:Platform.OS === 'ios' ?width-115:0 , fontSize:13 }}
+                                            textStyle={{ color: "#acabae" ,  fontSize:13 }}
                                             itemTextStyle={{ color: '#acabae' }}
                                             selectedValue={this.state.selectedCity}
                                             onValueChange={(value) => this.setState({ selectedCity: value })}
@@ -287,7 +287,7 @@ class Category extends Component {
                                             placeholder={i18n.t('organizations')}
                                             placeholderStyle={{ color: "#acabae" }}
                                             placeholderIconColor="#acabae"
-                                            textStyle={{ color: "#acabae" , right:Platform.OS === 'ios' ?width-115:0 , fontSize:13 }}
+                                            textStyle={{ color: "#acabae" , fontSize:13 }}
                                             itemTextStyle={{ color: '#acabae' }}
                                             selectedValue={this.state.selectedOrganizations}
                                             onValueChange={(value) => this.setState({ selectedOrganizations: value })}

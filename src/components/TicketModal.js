@@ -17,6 +17,7 @@ import Styles from '../../assets/styles'
 import axios from "axios";
 import CONST from "../consts";
 import {connect} from "react-redux";
+import i18n from '../../locale/i18n'
 import {NavigationEvents} from "react-navigation";
 
 const height = Dimensions.get('window').height;
@@ -32,14 +33,18 @@ class TicketModal extends Component {
             activeDate:null
         }
 
-        console.log(this.props)
+      //  console.log(this.props)
     }
 
     componentWillMount() {
-            axios({
+
+        console.log('user dataaaaaaaa....', this.props.user);
+		AsyncStorage.getItem('deviceID').then(deviceID => {
+
+			axios({
                 url: CONST.url + 'my_bookings',
                 method: 'POST',
-                headers: this.props.user != null ? {Authorization: this.props.user.token} : null,
+                headers: {Authorization: this.props.user.token},
                 data: { lang: this.props.lang}
             }).then(response => {
             this.setState({
@@ -47,11 +52,13 @@ class TicketModal extends Component {
                 dates: response.data.data.dates,
                 status: response.data.status
             })
+
+			})
         })
     }
 
     componentWillReceiveProps(nextProps){
-        console.log(nextProps)
+     //   console.log(nextProps)
         this.setState({visibleModal:nextProps.isModalVisible})
     }
 
@@ -78,19 +85,40 @@ class TicketModal extends Component {
     pressedDate(date){
         this.setState({activeDate :date})
     }
-
-    onFocus(){
-        this.componentWillMount()
+    renderNoData(){
+        if (this.state.events.length === 0 && this.state.status != null){
+            return(
+                <View style={{ width: '100%', flex: 1, alignItems: 'center', justifyContent: 'center', height:height-200}}>
+                    <Image source={require('../../assets/images/no_data.png')} resizeMode={'contain'} style={{ width: 200, height: 200 }}/>
+                    <Text style={{ fontFamily: 'RegularFont', fontSize: 16, textAlign: "center", marginTop: 10, color: '#6d6c72' }}>{ i18n.t('noData') }</Text>
+                </View>
+            );
+        }
     }
+
+    componentDidMount() {
+        this.amany = [
+            this.props.navigation.addListener('willFocus', () => this.componentWillMount()),
+        ];
+    }
+
+    componentWillUnmount() {
+        this.amany.forEach((sub) => {
+            sub.remove();
+        });
+    }
+
+
 
     render() {
         console.log('events', this.state.events);
         return (
             <Modal avoidKeyboard={true} coverScreen={false} style={{}} deviceHeight={height-140} isVisible={this.state.visibleModal} onBackdropPress={() => this.setState({ visibleModal: this.props.footer_ticketModal('home') })}>
-                <NavigationEvents onWillFocus={payload => this.onFocus()} />
                 <View style={[Styles.searchModal , {height:height-200 , paddingHorizontal:10}]}>
                     <View style={Styles.viewLine}></View>
+                    { this.renderNoData() }
                     <View style={{flexDirection:'row' , width:'100%' }}>
+
                        <View>
                            <ScrollView style={{ marginRight:10 }}>
                                {
@@ -125,7 +153,7 @@ class TicketModal extends Component {
 const mapStateToProps = ({ lang , profile}) => {
     return {
         lang: lang.lang,
-        user: profile.user,
+		user: profile.user,
     };
 };
 export default connect(mapStateToProps, {})(TicketModal);

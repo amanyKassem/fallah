@@ -67,6 +67,8 @@ const en = {
     'guest': 'guest',
     'codeNotCorrect' : 'code not correct',
     'emailNotCorrect':  'email not correct',
+    'searchResult': 'Search result',
+    'noData' : 'no data'
 }
 
 export default en;

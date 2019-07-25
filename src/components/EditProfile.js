@@ -104,7 +104,7 @@ class EditProfile extends Component {
     renderLoader(){
         if (this.state.status === null){
             return(
-                <View style={{ alignItems: 'center', justifyContent: 'center', height: height + 100, alignSelf:'center' , backgroundColor:'#fff' , width:'100%'  , position:'absolute' , zIndex:1 }}>
+                <View style={{ alignItems: 'center', justifyContent: 'center', height: height + 100, alignSelf:'center' , backgroundColor:'#121320' , width:'100%'  , position:'absolute' , zIndex:1 }}>
                     <DoubleBounce size={20} color="#0fd1fa" />
                 </View>
             );
@@ -153,45 +153,46 @@ class EditProfile extends Component {
                     </View>
                 </Header>
                 <Content style={Styles.homecontent}>
-                    <View style={[Styles.eventswiper ,  {backgroundColor:'#121320' , height:400}]}>
-                        {image != null?
-                            <Image
-                                style={[Styles.eventswiper , {height:400}]} resizeMode={'cover'}
-                                source={{ uri: image }}
-                            />
-                            :
-                            <Image source={{uri:this.props.user.avatar}} style={[Styles.eventswiper , {height:400}]} resizeMode={'cover'} />
-                        }
+                    <KeyboardAvoidingView behavior={'padding'} style={{width:'100%', height: null, flex: 1,}}>
+                        <View style={[Styles.eventswiper ,  {backgroundColor:'#121320' , height:400}]}>
+                            {image != null?
+                                <Image
+                                    style={[Styles.eventswiper , {height:400}]} resizeMode={'cover'}
+                                    source={{ uri: image }}
+                                />
+                                :
+                                <Image source={{uri:this.props.user.avatar}} style={[Styles.eventswiper , {height:400}]} resizeMode={'cover'} />
+                            }
 
-                        <View style={[Styles.eventswiper , {backgroundColor: '#00000060' , position:'absolute' , top:0 , height:400}]} />
+                            <View style={[Styles.eventswiper , {backgroundColor: '#00000060' , position:'absolute' , top:0 , height:400}]} />
 
-                    </View>
+                        </View>
 
-                    <View style={[Styles.parentViewEvent , {height:'auto' , paddingHorizontal:30 , marginTop:-110 , borderTopLeftRadius:75 }]}>
-                        <Form style={{width: '100%' , marginTop:30}}>
-                            <View style={[Styles.inputParent , {borderColor:this.state.nameStatus === 1 ? '#0fd1fa' : '#acabae' }]}>
-                                <Item floatingLabel style={[Styles.item , {width:'100%'}]} bordered>
-                                    <Label style={[Styles.labelItem , {color: this.state.nameStatus === 1 ? '#0fd1fa' : '#acabae' , fontSize:16 }]}>{ i18n.t('username') }</Label>
-                                    <Input value={this.state.name} onChangeText={(name) => this.setState({ name })} auto-capitalization={false} onBlur={() => this.unActiveInput('name')} onFocus={() => this.activeInput('name')} style={Styles.itemInput}/>
-                                </Item>
-                            </View>
-                            <View style={[ Styles.inputParent ,{ borderColor:this.state.phoneStatus === 1 ? '#0fd1fa' : '#acabae'}]}>
-                                <Item floatingLabel style={[Styles.item , {width:'100%'}]} bordered>
-                                    <Label style={[Styles.labelItem ,{ color: this.state.phoneStatus === 1 ? '#0fd1fa' : '#acabae', fontSize:16 }]}>{ i18n.t('phoneNumber') }</Label>
-                                    <Input value={this.state.phone} onChangeText={(phone) => this.setState({phone})} keyboardType={'number-pad'} onBlur={() => this.unActiveInput('phone')} onFocus={() => this.activeInput('phone')} style={Styles.itemInput}  />
-                                </Item>
-                            </View>
+                        <View style={[Styles.parentViewEvent , {height:'auto' , paddingHorizontal:30 , marginTop:-110 , borderTopLeftRadius:75 }]}>
+                            <Form style={{width: '100%' , marginTop:30}}>
+                                <View style={[Styles.inputParent , {borderColor:this.state.nameStatus === 1 ? '#0fd1fa' : '#acabae' }]}>
+                                    <Item floatingLabel style={[Styles.item , {width:'100%'}]} bordered>
+                                        <Label style={[Styles.labelItem , {color: this.state.nameStatus === 1 ? '#0fd1fa' : '#acabae' , fontSize:16 }]}>{ i18n.t('username') }</Label>
+                                        <Input value={this.state.name} onChangeText={(name) => this.setState({ name })} auto-capitalization={false} onBlur={() => this.unActiveInput('name')} onFocus={() => this.activeInput('name')} style={Styles.itemInput}/>
+                                    </Item>
+                                </View>
+                                <View style={[ Styles.inputParent ,{ borderColor:this.state.phoneStatus === 1 ? '#0fd1fa' : '#acabae'}]}>
+                                    <Item floatingLabel style={[Styles.item , {width:'100%'}]} bordered>
+                                        <Label style={[Styles.labelItem ,{ color: this.state.phoneStatus === 1 ? '#0fd1fa' : '#acabae', fontSize:16 }]}>{ i18n.t('phoneNumber') }</Label>
+                                        <Input value={this.state.phone} onChangeText={(phone) => this.setState({phone})} keyboardType={'number-pad'} onBlur={() => this.unActiveInput('phone')} onFocus={() => this.activeInput('phone')} style={Styles.itemInput}  />
+                                    </Item>
+                                </View>
 
-                            <View style={[ Styles.inputParent ,{ borderColor: this.state.mailStatus === 1 ? '#0fd1fa' : '#acabae'}]}>
-                                <Item floatingLabel style={[Styles.item , {width:'100%'}]} bordered>
-                                    <Label style={[Styles.labelItem ,{ color:this.state.mailStatus === 1 ? '#0fd1fa' : '#acabae' , fontSize:16 }]}>{ i18n.t('email') }</Label>
-                                    <Input value={this.state.mail} onChangeText={(mail) => this.setState({mail})} keyboardType={'email-address'} onBlur={() => this.unActiveInput('mail')} onFocus={() => this.activeInput('mail')} style={Styles.itemInput}  />
-                                </Item>
-                            </View>
+                                <View style={[ Styles.inputParent ,{ borderColor: this.state.mailStatus === 1 ? '#0fd1fa' : '#acabae'}]}>
+                                    <Item floatingLabel style={[Styles.item , {width:'100%'}]} bordered>
+                                        <Label style={[Styles.labelItem ,{ color:this.state.mailStatus === 1 ? '#0fd1fa' : '#acabae' , fontSize:16 }]}>{ i18n.t('email') }</Label>
+                                        <Input value={this.state.mail} onChangeText={(mail) => this.setState({mail})} keyboardType={'email-address'} onBlur={() => this.unActiveInput('mail')} onFocus={() => this.activeInput('mail')} style={Styles.itemInput}  />
+                                    </Item>
+                                </View>
 
-                        </Form>
-                    </View>
-
+                            </Form>
+                        </View>
+                    </KeyboardAvoidingView>
                 </Content>
 
                 <View style={[Styles.btnParent ,{marginTop:0 , backgroundColor:'#fff' , justifyContent: 'space-between'}]} >

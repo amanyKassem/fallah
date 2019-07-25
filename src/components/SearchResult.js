@@ -15,12 +15,12 @@ const height = Dimensions.get('window').height;
 const width = Dimensions.get('window').width;
 
 
-class SuggestedEvent extends Component {
+class SearchResult extends Component {
     constructor(props){
         super(props);
 
         this.state={
-            events:[],
+            searchResult:[],
             status:null,
         }
     }
@@ -30,22 +30,20 @@ class SuggestedEvent extends Component {
     });
 
     componentWillMount(){
+        console.log(this.props.navigation.state.params.search);
+
         axios({
-            url: CONST.url + 'suggested_events',
+            url: CONST.url + 'search',
             method: 'POST',
-            data: {lang: this.props.lang}
+            data: { lang: this.props.lang , search:this.props.navigation.state.params.search }
         }).then(response => {
             this.setState({
-                events: response.data.data,
+                searchResult: response.data.data,
                 status: response.data.status,
             })
         })
 
     }
-
-
-
-
 
 
     _keyExtractor = (item, index) => item.id;
@@ -103,7 +101,7 @@ class SuggestedEvent extends Component {
                         </Button>
                     </Right>
                     <Body style={Styles.bodyHeadrt}>
-                    <Text style={{ color: '#fff', textAlign: 'center', fontSize: 20 , fontFamily:'RegularFont' }}>{i18n.t('proposedEvents')}</Text>
+                    <Text style={{ color: '#fff', textAlign: 'center', fontSize: 20 , fontFamily:'RegularFont' }}>{i18n.t('searchResult')}</Text>
                     </Body>
                     <Left style={Styles.leftHeader}>
 
@@ -114,9 +112,9 @@ class SuggestedEvent extends Component {
                     { this.renderLoader() }
                     <View style={Styles.parentView}>
                         <View style={Styles.viewLine}></View>
-                        <Image source={require('../../assets/images/suggestion_events.png')}  style={Styles.headphone} resizeMode={'contain'} />
+                        <Image source={require('../../assets/images/gray_search.png')}  style={Styles.headphone} resizeMode={'contain'} />
                         <FlatList
-                            data={this.state.events}
+                            data={this.state.searchResult}
                             renderItem={({item}) => this.renderItems(item)}
                             numColumns={1}
                             keyExtractor={this._keyExtractor}
@@ -135,4 +133,4 @@ const mapStateToProps = ({ lang }) => {
         lang: lang.lang
     };
 };
-export default connect(mapStateToProps, {})(SuggestedEvent);
+export default connect(mapStateToProps, {})(SearchResult);

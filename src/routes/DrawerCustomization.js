@@ -53,10 +53,10 @@ class DrawerCustomization extends Component {
         return (
             <Container>
                 <Content style={{backgroundColor:'#121320'}}>
-                    <TouchableOpacity onPress={()=> this.props.navigation.navigate("profile")} style={{flex:1 , alignItems: 'center' , marginBottom:60, paddingTop:95}}>
-                         <Image source={require('../../assets/images/bg_menu.png')} resizeMode={'contain'} style={{ width: '100%', height: 250 , position:'absolute' , top:15  }}/>
+                    <TouchableOpacity onPress={()=> this.props.navigation.navigate("profile")} style={{flex:1 , alignItems: 'center' , marginBottom:20, paddingTop:95}}>
+                         <Image source={require('../../assets/images/bg_menu.png')} resizeMode={'contain'} style={{ width: '100%', height: 230 , position:'absolute' , top:15  }}/>
                          <Image source={{ uri: user.avatar }} resizeMode={'cover'} style={{ width: 90, height: 90 , borderRadius:50 }}/>
-                        <Text style={{color:'#fff',  fontSize:17, fontFamily: 'RegularFont'}}>اماني قاسم</Text>
+                        <Text style={{color:'#fff',  fontSize:17, fontFamily: 'RegularFont'}}>{ user.name }</Text>
                     </TouchableOpacity>
                     <DrawerItems {...this.props}
                                  onItemPress={

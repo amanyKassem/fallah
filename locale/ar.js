@@ -67,6 +67,8 @@ const ar = {
     'guest': 'زائر',
     'codeNotCorrect' : 'كود التفعيل غير صحيح',
     'emailNotCorrect': 'البريد الالكتروني غير صحيح',
+    'searchResult': 'نتائج البحث',
+    'noData' : 'لا يوجد بيانات'
 }
 
 export default ar;
