@@ -22,7 +22,6 @@ export const chooseLang = lang => {
 
 const setLang = async lang => {
     await AsyncStorage.setItem('lang', lang).then (() =>{
-        // alert("aaaa");
-        Expo.Util.reload();
+		Expo.Util.reload();
     });
 };

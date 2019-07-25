@@ -38,8 +38,6 @@ class Login extends Component {
             this.setState({ passwordStatus: 0 })
     }
 
-
-
     renderInputImage(type){
         let source ='';
         if (type === 'phone'){
@@ -79,6 +77,7 @@ class Login extends Component {
         }
         return isError;
     };
+
     renderSubmit(){
         if (this.state.isLoaded){
             return(
@@ -127,8 +126,12 @@ class Login extends Component {
     }
 
     componentWillReceiveProps(newProps){
-        // console.log('newProps' , newProps)
+        console.log('props auth ...', newProps.auth);
+
+
         if (newProps.auth !== null && newProps.auth.status === 200){
+
+            console.log('this is user id...', this.state.userId);
 
             if (this.state.userId === null){
                 this.setState({ userId: newProps.auth.data.id });
@@ -157,13 +160,6 @@ class Login extends Component {
         return (
 
             <Container style={styles.container}>
-                <Header style={[styles.header , { marginTop:0, height:Platform.OS === 'ios' ?70:60 , top:40 }]} noShadow>
-                    <View style={[styles.headerView , {flexDirection:'row' , paddingHorizontal:10 , top:-5}]}>
-                        <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
-                            <Image source={require('../../assets/images/white_right.png')} style={[styles.headerNoti , styles.transform ]} resizeMode={'contain'} />
-                        </TouchableOpacity>
-                    </View>
-                </Header>
                 <NavigationEvents onWillFocus={() => this.onFocus()} />
                 <Content contentContainerStyle={{ flexGrow: 1 , top:-1 }}>
                     <KeyboardAvoidingView behavior={'padding'} style={{width:'100%', height: null, flex: 1,}}>
@@ -209,8 +205,8 @@ class Login extends Component {
                     </ImageBackground>
                     </KeyboardAvoidingView>
                 </Content>
-                <View style={[styles.btnParent ,{marginTop:0 , backgroundColor:'#121320'}]} >
-                    <TouchableOpacity  style={styles.registerBtn}  onPress={() => this.props.navigation.navigate('register')}>
+                <View style={[styles.btnParent ,{marginTop:0 , backgroundColor:'transparent', position: 'absolute', width: '100%', bottom: 0}]} >
+                    <TouchableOpacity  style={[styles.registerBtn, { backgroundColor: '#121320' }]}  onPress={() => this.props.navigation.navigate('register')}>
                         <Text style={styles.registerTxt}>{ i18n.t('registerButton') }</Text>
                     </TouchableOpacity>
                 </View>

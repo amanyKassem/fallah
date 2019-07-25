@@ -65,14 +65,6 @@ const DrawerNavigator = createDrawerNavigator({
 })
 const AppNavigator = createStackNavigator({
 
-
-    // RNParallax: {
-    //     screen: RNParallax,
-    //     navigationOptions: {
-    //         header: null
-    //     }
-    // },
-
     initScreen: {
         screen: InitScreen,
         navigationOptions: {
@@ -122,16 +114,12 @@ const AppNavigator = createStackNavigator({
             header: null
         }
     },
-
     intro: {
         screen: Intro,
         navigationOptions: {
             header: null
         }
     },
-
-
-
     profile: {
         screen: Profile,
         navigationOptions: {

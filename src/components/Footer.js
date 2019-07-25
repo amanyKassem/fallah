@@ -57,7 +57,7 @@ class FooterSection extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log(nextProps)
+    //    console.log(nextProps)
     }
 
     onFocus(payload){

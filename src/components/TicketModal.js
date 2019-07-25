@@ -32,14 +32,18 @@ class TicketModal extends Component {
             activeDate:null
         }
 
-        console.log(this.props)
+      //  console.log(this.props)
     }
 
     componentWillMount() {
-            axios({
+
+        console.log('user dataaaaaaaa....', this.props.user);
+		AsyncStorage.getItem('deviceID').then(deviceID => {
+
+			axios({
                 url: CONST.url + 'my_bookings',
                 method: 'POST',
-                headers: this.props.user != null ? {Authorization: this.props.user.token} : null,
+                headers: {Authorization: this.props.user.token},
                 data: { lang: this.props.lang}
             }).then(response => {
             this.setState({
@@ -47,11 +51,13 @@ class TicketModal extends Component {
                 dates: response.data.data.dates,
                 status: response.data.status
             })
+
+			})
         })
     }
 
     componentWillReceiveProps(nextProps){
-        console.log(nextProps)
+     //   console.log(nextProps)
         this.setState({visibleModal:nextProps.isModalVisible})
     }
 
@@ -125,7 +131,7 @@ class TicketModal extends Component {
 const mapStateToProps = ({ lang , profile}) => {
     return {
         lang: lang.lang,
-        user: profile.user,
+		user: profile.user,
     };
 };
 export default connect(mapStateToProps, {})(TicketModal);

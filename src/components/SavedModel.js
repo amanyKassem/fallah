@@ -32,11 +32,12 @@ class SavedModel extends Component {
             savedItems:[]
         }
 
-        console.log(this.props)
+     //   console.log(this.props)
     }
 
     componentWillMount() {
         AsyncStorage.getItem('deviceID').then(deviceID => {
+            console.log('saves device id & token ..', deviceID, this.props.user.token);
             axios({
                 url: CONST.url + 'saves',
                 method: 'POST',
@@ -52,7 +53,6 @@ class SavedModel extends Component {
     }
 
     componentWillReceiveProps(nextProps){
-        console.log(nextProps)
         this.setState({visibleModal:nextProps.isModalVisible})
     }
 

@@ -142,7 +142,7 @@ const styles = ({
         width: '100%',
         flexDirection: 'row',
         justifyContent: 'space-between',
-        paddingHorizontal: 20
+        paddingHorizontal: 10
     },
     headerMenu:{
         width: 25,

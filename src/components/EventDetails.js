@@ -54,7 +54,8 @@ class EventDetails extends Component {
             axios({
                 url: CONST.url + 'event_details',
                 method: 'POST',
-                data: {id: eventId , lang: this.props.lang , device_id: deviceID}
+				headers: this.props.user != null ? {Authorization: this.props.user.token} : null,
+                data: {id: eventId , lang: this.props.lang , device_id: deviceID},
             }).then(response => {
                 this.setState({
                     event: response.data.data,
