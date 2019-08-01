@@ -15,6 +15,7 @@ import { DoubleBounce } from 'react-native-loader';
 import {connect} from "react-redux";
 
 
+
 const height = Dimensions.get('window').height;
 const IS_IPHONE_X = height === 812 || height === 896;
 
@@ -94,13 +95,13 @@ class Home extends Component {
 	renderItems = (item) => {
 		return(
 			<TouchableOpacity onPress={() => this.props.navigation.navigate('category', { id: item.id  , name :item.name})} style={Styles.categoryList}>
-				<View style={Styles.homeViewContainer}>
+				<Animatable.View animation="zoomIn" duration={800} style={Styles.homeViewContainer}>
 					<View style={Styles.homeTextCont}>
 						<Text style={Styles.homeText}>{item.name}</Text>
 					</View>
 					<View style={Styles.viewLine}></View>
 					<Image source={{ uri: item.image }} resizeMode={'cover'} style={Styles.flatImage}/>
-				</View>
+				</Animatable.View>
 			</TouchableOpacity>
 		);
 	}
@@ -174,6 +175,18 @@ class Home extends Component {
         }
     }
 
+	renderNoData(){
+		if (this.state.notifications.length === 0 && this.state.status != null){
+			return(
+				<View style={{ width: '100%', flex: 1, alignItems: 'center', justifyContent: 'center', height:height-200, marginTop: 40}}>
+					<Image source={require('../../assets/images/no_data.png')} resizeMode={'contain'} style={{ width: 200, height: 200 }}/>
+					<Text style={{ fontFamily: 'RegularFont', fontSize: 16, textAlign: "center", marginTop: 10, color: '#6d6c72' }}>{ i18n.t('noData') }</Text>
+				</View>
+			);
+		}
+	}
+
+
 	render() {
 		const url      = this.state.imgUri;
 		let isVideo    = false;
@@ -198,7 +211,7 @@ class Home extends Component {
                         <Button transparent onPress={() => this.props.navigation.openDrawer()} style={{width:45, height:45 , justifyContent:'center' , alignItems:'center', marginTop: 35}}>
                             <Image source={require('../../assets/images/menu.png')} style={Styles.headerMenu} resizeMode={'contain'} />
                         </Button>
-                        <Button transparent onPress={() => this.toggleModal() } style={{width:45, height:45 , justifyContent:'center' , alignItems:'center', marginTop: 35}}>
+                        <Button transparent onPress={() => this.props.user ? this.toggleModal() : this.props.navigation.navigate("login") } style={{width:45, height:45 , justifyContent:'center' , alignItems:'center', marginTop: 35}}>
                             <Image source={require('../../assets/images/notification.png')} style={Styles.headerNoti} resizeMode={'contain'} />
                         </Button>
                     </Animated.View>
@@ -258,6 +271,7 @@ class Home extends Component {
 						<View style={[Styles.filterModal,{padding:15 , height:450}]}>
 							<View style={Styles.viewLine}></View>
 							<Text style={[Styles.eventboldName ,{fontSize:16 , alignSelf:'center' , marginBottom:10}]}>{ i18n.t('notifications') }</Text>
+							{ this.renderNoData() }
 							<ScrollView style={{flexDirection:'column'}}>
 								<List style={{width:'100%'}}>
 

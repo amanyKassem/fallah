@@ -22,7 +22,6 @@ export default class App extends React.Component {
 
 
   componentWillMount() {
-    I18nManager.forceRTL(true);
     console.log("mmmm",I18nManager.isRTL);
     // AsyncStorage.clear();
   }

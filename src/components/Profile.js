@@ -68,7 +68,7 @@ class Profile extends Component {
                     </View>
                 </Header>
                 <Content style={Styles.homecontent}>
-                    <View style={[Styles.eventswiper ,  {backgroundColor:'#121320' , height:400}]}>
+                    <View style={[Styles.eventswiper , {backgroundColor:'#121320' , height:400}]}>
                         <Image source={{uri:this.props.user.avatar}} style={[Styles.eventswiper , {height:400}]} resizeMode={'cover'} />
                     </View>
 

@@ -10,7 +10,7 @@ import {
     FlatList,
     AsyncStorage
 } from "react-native";
-import { Container, Content, Button, Footer, Icon, Item , Input } from 'native-base'
+
 import Modal from "react-native-modal";
 
 import Styles from '../../assets/styles'
@@ -18,7 +18,6 @@ import axios from "axios";
 import CONST from "../consts";
 import {connect} from "react-redux";
 import i18n from '../../locale/i18n'
-import {NavigationEvents} from "react-navigation";
 
 const height = Dimensions.get('window').height;
 
@@ -115,17 +114,18 @@ class TicketModal extends Component {
         return (
             <Modal avoidKeyboard={true} coverScreen={false} style={{}} deviceHeight={height-140} isVisible={this.state.visibleModal} onBackdropPress={() => this.setState({ visibleModal: this.props.footer_ticketModal('home') })}>
                 <View style={[Styles.searchModal , {height:height-200 , paddingHorizontal:10}]}>
+					<View style={Styles.viewLine}></View>
+					<Text style={[Styles.eventboldName ,{fontSize:16 , alignSelf:'center' , marginBottom:15, marginTop: -20}]}>{ i18n.t('myTickets') }</Text>
                     <View style={Styles.viewLine}></View>
                     { this.renderNoData() }
                     <View style={{flexDirection:'row' , width:'100%' }}>
-
                        <View>
                            <ScrollView style={{ marginRight:10 }}>
                                {
                                    this.state.dates.map((date, i) => {
                                        return(
-                                           <TouchableOpacity onPress={ () => this.pressedDate(date)} key={i}>
-                                               <Text style={[Styles.date, {color:this.state.activeDate === date ? '#fff' : '#6d6c72', backgroundColor:this.state.activeDate === date ?  '#0fd1fa' : '#ffffffb3'}]}>{date}</Text>
+                                           <TouchableOpacity onPress={() => this.scroll.scrollTo({x: 0, y: 200, animated: true}) } style={{ borderRadius:5 , padding:5 , width:37 , height:37 , backgroundColor:this.state.activeDate === date ?  '#0fd1fa' : '#ffffffb3', justifyContent: 'center', alignItems: 'center' }} onPress={ () => this.pressedDate(date)} key={i}>
+                                               <Text style={[Styles.date, {color:this.state.activeDate === date ? '#fff' : '#6d6c72', marginTop: 5}]}>{date}</Text>
                                            </TouchableOpacity>
                                        )
                                    }
@@ -133,7 +133,7 @@ class TicketModal extends Component {
                                }
                            </ScrollView>
                        </View>
-                        <ScrollView style={{}}>
+                        <ScrollView ref={(ticket) => this.scroll = ticket} style={{}}>
                             <FlatList
                                 data={this.state.events}
                                 renderItem={({item}) => this.renderItems(item)}

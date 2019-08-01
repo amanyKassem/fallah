@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions , I18nManager , FlatList , Slider , Platform} from "react-native";
-import { Container, Content, Button, Picker, Icon, Header , Left, Right, Body , Form, Item, Input, Label  } from 'native-base'
+import { View, Text, Image, TouchableOpacity, Dimensions , I18nManager , FlatList , Slider , Platform} from "react-native";
+import { Container, Content, Button, Picker, Header , Left, Right, Body , Form, Item, Input, Label  } from 'native-base'
 import Modal from "react-native-modal";
 import Styles from '../../assets/styles';
 import DateTimePicker from "react-native-modal-datetime-picker";
@@ -10,6 +10,7 @@ import CONST from "../consts";
 import {NavigationEvents} from "react-navigation";
 import {DoubleBounce} from "react-native-loader";
 import {connect} from "react-redux";
+import * as Animatable from 'react-native-animatable';
 
 const height = Dimensions.get('window').height;
 const width = Dimensions.get('window').width;
@@ -177,8 +178,8 @@ class Category extends Component {
 
     renderItems = (item) => {
         return(
-            <TouchableOpacity onPress={() => this.props.navigation.navigate('eventDetails', { id: item.id , name :item.title })} style={Styles.eventTouch}>
-                <View style={Styles.eventContent}>
+            <TouchableOpacity onPress={() => this.props.user ? this.props.navigation.navigate('eventDetails', { id: item.id , name :item.title }) : this.props.navigation.navigate("login") } style={Styles.eventTouch}>
+                <Animatable.View animation="fadeInUp" duration={1200} style={Styles.eventContent}>
                     <Right style={Styles.eventRight}>
                         <Image source={{ uri: item.image }} resizeMode={'cover'} style={Styles.categoryImg}/>
                     </Right>
@@ -196,10 +197,11 @@ class Category extends Component {
                             <Text style={[Styles.eventText , {color:'#e51d6f'}]}>{item.price}</Text>
                         </View>
                     </Left>
-                </View>
+                </Animatable.View>
             </TouchableOpacity>
         );
     }
+
     renderLoader(){
         if (this.state.status === null){
             return(
@@ -238,11 +240,11 @@ class Category extends Component {
                     </Left>
                 </Header>
                 <NavigationEvents onWillFocus={payload => this.onFocus(payload)} />
-                <Content style={Styles.content}>
+                <Content contentContainerStyle={{ flexGrow: 1 , top:-1 }} style={Styles.content}>
                     { this.renderLoader() }
                     <View style={Styles.parentView}>
                         <View style={Styles.viewLine}></View>
-                        <Image source={{ uri: this.state.category.icon }}  style={Styles.headphone} resizeMode={'contain'} />
+                        <Animatable.Image animation="fadeInUp" duration={800} source={{ uri: this.state.category.icon }}  style={Styles.headphone} resizeMode={'contain'} />
                         <FlatList
                             data={this.state.events}
                             renderItem={({item}) => this.renderItems(item)}
@@ -347,9 +349,9 @@ class Category extends Component {
                                         minimumTrackTintColor={'#000'}
                                     />
                                     <View style={Styles.range}>
-                                        <Text style={{ color: '#acabae' }}>{this.state.max}</Text>
+										<Left><Text style={{ color: '#acabae' }}>{this.state.min}</Text></Left>
                                         <Text style={{ color: '#acabae' }}>{this.state.value}</Text>
-                                        <Text style={{ color: '#acabae' }}>{this.state.min}</Text>
+                                        <Right><Text style={{ color: '#acabae' }}>{this.state.max}</Text></Right>
                                     </View>
                                 </View>
                             </Form>
@@ -371,9 +373,10 @@ class Category extends Component {
     }
 }
 
-const mapStateToProps = ({ lang }) => {
+const mapStateToProps = ({ lang, profile }) => {
     return {
-        lang: lang.lang
+        lang: lang.lang,
+		user: profile.user
     };
 };
 export default connect(mapStateToProps, {})(Category);

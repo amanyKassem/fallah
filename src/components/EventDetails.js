@@ -91,7 +91,7 @@ class EventDetails extends Component {
             }).then(response => {
 
                 this.props.navigation.navigate('confirmPayment' , {id:response.data.data.booking_id}) ;
-                this.setState({ payOnlineModal: !this.state.payOnlineModal })
+                this.setState({ payOnlineModal: false, isModalVisible: false });
             })
         })
 
@@ -114,28 +114,22 @@ class EventDetails extends Component {
     };
     payOnlineModal = (price, type) => {
         this.setState({ payOnlineModal: !this.state.payOnlineModal });
-        this.setState({ isModalVisible: !this.state.isModalVisible });
         this.setState({ price , ticketType:type});
     };
     onShare = async () => {
-        try {
-            const result = await Share.share({
-                message:
-                    'React Native | A framework for building native apps using React',
-            })
-
-            if (result.action === Share.sharedAction) {
-                if (result.activityType) {
-                    // shared with activity type of result.activityType
-                } else {
-                    // shared
-                }
-            } else if (result.action === Share.dismissedAction) {
-                // dismissed
-            }
-        } catch (error) {
-            alert(error.message);
-        }
+		const eventName = this.props.navigation.state.params.name;
+		const eventId   = this.props.navigation.state.params.id;
+		Share.share({
+			title: eventName,
+			url: CONST.domain + '/event/' + eventId,
+			message: this.state.event.desc + '\n' + ' ' + CONST.domain + 'event/'  + eventId
+		},
+            {
+			dialogTitle: i18n.t('shareEvent'),
+			excludedActivityTypes: [
+				'com.apple.UIKit.activity.PostToTwitter'
+			]
+		});
     };
     _linkPressed (url){
         Linking.openURL(url);
@@ -297,30 +291,30 @@ class EventDetails extends Component {
                                 </TouchableOpacity>
                             </View>
                         </View>
-                    </Modal>
 
-                    <Modal style={{}} isVisible={this.state.payOnlineModal} onBackdropPress={() => this.payOnlineModal()}>
-                        <View style={[Styles.filterModal,{padding:15}]}>
-                            <View style={Styles.viewLine}></View>
-                            <Image source={require('../../assets/images/online_payment.png')} style={[Styles.leftImg , {width:40 , height:40 , top:0 , marginRight:0 , alignSelf:'center'}]} resizeMode={'contain'} />
-                            <Text style={[Styles.eventText ,{fontSize:16 , alignSelf:'center'}]}>{ i18n.t('payOnline') }</Text>
-                            <View style={Styles.modalLine}></View>
+						<Modal style={{}} isVisible={this.state.payOnlineModal} onBackdropPress={() => this.payOnlineModal()}>
+							<View style={[Styles.filterModal,{padding:15}]}>
+								<View style={Styles.viewLine}></View>
+								<Image source={require('../../assets/images/online_payment.png')} style={[Styles.leftImg , {width:40 , height:40 , top:0 , marginRight:0 , alignSelf:'center'}]} resizeMode={'contain'} />
+								<Text style={[Styles.eventText ,{fontSize:16 , alignSelf:'center'}]}>{ i18n.t('payOnline') }</Text>
+								<View style={Styles.modalLine}></View>
 
 
-                            {this.renderTicketType()}
+								{this.renderTicketType()}
 
-                            <View style={[Styles.filterPayModal ,{flexDirection:'row' , justifyContent:'space-between'}]}>
-                                <TouchableOpacity  style={Styles.imgText} onPress={() => this.payClick() }>
-                                    <Image source={require('../../assets/images/visa.png')} style={[Styles.leftImg , {width:50 , height:50 , top:-5 , marginRight:5}]} resizeMode={'contain'} />
-                                </TouchableOpacity>
-                                <TouchableOpacity style={Styles.imgText} onPress={() => this.payClick()}>
-                                    <Image source={require('../../assets/images/sadad.png')} style={[Styles.leftImg , {width:50 , height:50 , top:-5 , marginRight:5}]} resizeMode={'contain'} />
-                                </TouchableOpacity>
-                                <TouchableOpacity style={Styles.imgText} onPress={() => this.payClick()}>
-                                    <Image source={require('../../assets/images/mada.png')} style={[Styles.leftImg , {width:50 , height:50 , top:-5 , marginRight:5}]} resizeMode={'contain'} />
-                                </TouchableOpacity>
-                            </View>
-                        </View>
+								<View style={[Styles.filterPayModal ,{flexDirection:'row' , justifyContent:'space-between'}]}>
+									<TouchableOpacity  style={Styles.imgText} onPress={() => this.payClick() }>
+										<Image source={require('../../assets/images/visa.png')} style={[Styles.leftImg , {width:50 , height:50 , top:-5 , marginRight:5}]} resizeMode={'contain'} />
+									</TouchableOpacity>
+									<TouchableOpacity style={Styles.imgText} onPress={() => this.payClick()}>
+										<Image source={require('../../assets/images/sadad.png')} style={[Styles.leftImg , {width:50 , height:50 , top:-5 , marginRight:5}]} resizeMode={'contain'} />
+									</TouchableOpacity>
+									<TouchableOpacity style={Styles.imgText} onPress={() => this.payClick()}>
+										<Image source={require('../../assets/images/mada.png')} style={[Styles.leftImg , {width:50 , height:50 , top:-5 , marginRight:5}]} resizeMode={'contain'} />
+									</TouchableOpacity>
+								</View>
+							</View>
+						</Modal>
                     </Modal>
                 </Content>
                 <View style={[Styles.btnParent ,{marginTop:0 , backgroundColor:'#fff'}]} >

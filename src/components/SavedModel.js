@@ -102,10 +102,13 @@ class SavedModel extends Component {
             );
         }
     }
+
     render() {
         return (
             <Modal avoidKeyboard={true} coverScreen={false} style={{}} deviceHeight={height-140} isVisible={this.state.visibleModal} onBackdropPress={() => this.setState({ visibleModal: this.props.footer_savedModal('home') })}>
                 <View style={[Styles.searchModal , {height:height-200}]}>
+					<View style={Styles.viewLine}></View>
+					<Text style={[Styles.eventboldName ,{fontSize:16 , alignSelf:'center' , marginBottom:15, marginTop: -20}]}>{ i18n.t('saves') }</Text>
                     <View style={Styles.viewLine}></View>
                         { this.renderNoData() }
                     <FlatList

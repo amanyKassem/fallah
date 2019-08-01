@@ -24,7 +24,7 @@ class ConfirmPayment extends Component {
         return (
 
             <Container style={{backgroundColor:'#fff'}}>
-                <Header style={Styles.header} noShadow>
+                <Header style={[Styles.header, {marginTop : 15 }]} noShadow>
                     <View style={[Styles.headerView , {flexDirection:'row'}]}>
                         <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
                             <Image source={require('../../assets/images/white_right.png')} style={Styles.headerNoti} resizeMode={'contain'} />
@@ -34,7 +34,7 @@ class ConfirmPayment extends Component {
                 <Content style={Styles.homecontent}>
                     <View style={[Styles.eventswiper ,  {backgroundColor:'#121320' , height:400}]}>
                         <Image source={require('../../assets/images/confirm_payment.png')} style={{ width: '100%',
-                            height: 300,top:15}} resizeMode={'cover'} />
+                            height: 300,top:45}} resizeMode={'cover'} />
                     </View>
                     <View style={[Styles.parentViewEvent , {height:'auto' , paddingRight:40 , marginTop:-70}]}>
                         <View style={{flexDirection:'row' , justifyContent:'center' , paddingTop:50}}>

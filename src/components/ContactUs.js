@@ -236,7 +236,7 @@ class ContactUs extends Component {
                                 </View>
                                 <View style={[ Styles.inputParent ,{ borderColor: this.state.msgStatus === 1 ? '#0fd1fa' : '#acabae'  , width:'85%' , alignSelf:'center' , height:'auto'}]}>
 
-                                        <Textarea value={this.state.msg} rowSpan={5} placeholder={ i18n.t('msg') } placeholderTextColor={"#acabae"} onChangeText={(msg) => this.setState({msg})} auto-capitalization={false} onBlur={() => this.unActiveInput('msg')} onFocus={() => this.activeInput('msg')} style={{width:'100%' , fontFamily: 'RegularFont', color: '#0fd1fa',textAlign:'right'}}  />
+                                        <Textarea value={this.state.msg} rowSpan={5} placeholder={ i18n.t('msg') } placeholderTextColor={"#acabae"} onChangeText={(msg) => this.setState({msg})} auto-capitalization={false} onBlur={() => this.unActiveInput('msg')} onFocus={() => this.activeInput('msg')} style={{width:'100%' , fontFamily: 'RegularFont', color: '#0fd1fa',textAlign: I18nManager.isRTL ? 'right' : 'left' }}  />
 
                                 </View>
                             </View>

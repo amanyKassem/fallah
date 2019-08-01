@@ -68,7 +68,10 @@ const ar = {
     'codeNotCorrect' : 'كود التفعيل غير صحيح',
     'emailNotCorrect': 'البريد الالكتروني غير صحيح',
     'searchResult': 'نتائج البحث',
-    'noData' : 'لا يوجد بيانات'
+    'noData' : 'لا يوجد بيانات',
+    'shareEvent' : 'مشاركة المناسبة',
+    'saves' : 'المحفوظات',
+	'myTickets' : 'تذاكري',
 }
 
 export default ar;

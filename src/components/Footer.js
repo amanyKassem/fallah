@@ -6,6 +6,7 @@ import SavedModal from './SavedModel'
 import TicketModal from './TicketModal'
 import Styles from '../../assets/styles'
 import {NavigationEvents} from "react-navigation";
+import {connect} from "react-redux";
 
 class FooterSection extends Component {
     constructor(props){
@@ -85,7 +86,7 @@ class FooterSection extends Component {
                 }
 
                 return(
-                    <Button transparent onPress={() => this.setAction(type)}>
+                    <Button transparent onPress={() => this.props.user ? this.setAction(type) : this.props.navigation.navigate('login')}>
                         <View style={Styles.footerActive}></View>
                         <Image style={Styles.footerImg} resizeMode={'contain'} source={activePath}/>
                     </Button>
@@ -103,13 +104,13 @@ class FooterSection extends Component {
                 break;
             case 'saved': path = require('../../assets/images/white_saved.png');
                 break;
-            case 'profile': path = require('../../assets/images/white_user.png');
+            case 'profile': path = require('../../assets/images/white_profile.png');
                 break;
            
         }
 
         return(
-            <Button transparent onPress={() => this.setAction(type)} style={{ }}>
+            <Button transparent onPress={() => this.props.user ? this.setAction(type) : this.props.navigation.navigate('login')} style={{ }}>
                 <Image style={Styles.footerImg} resizeMode={'contain'} source={path}/>
             </Button>
         );
@@ -145,5 +146,10 @@ class FooterSection extends Component {
     }
 }
 
-
-export default FooterSection;
+const mapStateToProps = ({ lang , profile}) => {
+	return {
+		lang: lang.lang,
+		user: profile.user,
+	};
+};
+export default connect(mapStateToProps, {})(FooterSection);

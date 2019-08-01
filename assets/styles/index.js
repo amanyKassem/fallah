@@ -147,12 +147,14 @@ const styles = ({
     headerMenu:{
         width: 25,
         height: 25,
-        top: 3
+        top: 3,
+		transform: I18nManager.isRTL ? [{rotateY : '0deg'}] : [{rotateY : '-180deg'}]
     },
     headerNoti:{
         width: 25,
         height: 25,
-        alignSelf:'center'
+        alignSelf:'center',
+		transform: I18nManager.isRTL ? [{rotateY : '0deg'}] : [{rotateY : '-180deg'}]
     },
     //home
     categoryList: {
@@ -297,7 +299,7 @@ const styles = ({
         padding:25,
         width: '110%',
         position: 'absolute',
-        bottom: 35,
+        bottom: -25,
         backgroundColor: '#fff',
         height: 300,
         alignSelf: 'center' ,
@@ -388,14 +390,10 @@ const styles = ({
     date:{
         fontFamily: 'RegularFont',
         color:'#6d6c72' ,
-        backgroundColor:'#ffffffb3' ,
         fontSize:12,
-        padding:5 ,
-        width:35 ,
-        height:37 ,
-        borderRadius:5 ,
         textAlign:'center' ,
         lineHeight:14 ,
+		width:35,
         marginBottom:10
     },
     // category page
@@ -409,12 +407,13 @@ const styles = ({
     },
     backStyle: {
         width: 25,
-        height: 25
+        height: 25,
+		transform: I18nManager.isRTL ? [{rotateY : '0deg'}] : [{rotateY : '-180deg'}]
     },
     filterStyle: {
         width: 25,
         height: 25,
-        top: 3
+        top: 3,
     },
     rightHeader : {
         flex: 0,
@@ -436,7 +435,6 @@ const styles = ({
         flex:1,
         backgroundColor:'#fff',
         width:'100%',
-        height:height,
         borderTopRightRadius:30  ,
         borderTopLeftRadius:30,
         padding:10
@@ -541,10 +539,10 @@ const styles = ({
     itemInput:{
         width: 200,
         color: '#acabae',
-        textAlign: 'right',
         fontSize: 15,
         top: 0,
         fontFamily: 'RegularFont',
+        textAlign: I18nManager.isRTL ? 'right' : 'left',
     },
     itemImage:{
         width: 20,
@@ -559,6 +557,7 @@ const styles = ({
         height: 20,
         right:I18nManager.isRTL ? 10 :'auto',
         left:I18nManager.isRTL ? 'auto' :10,
+        marginHorizontal: 20
     },
     //event details page
     eventdoteStyle:{

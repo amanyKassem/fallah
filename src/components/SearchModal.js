@@ -61,7 +61,7 @@ class SearchModal extends Component {
 
     render() {
         return (
-            <Modal avoidKeyboard={true} coverScreen={false} style={{}} deviceHeight={height-140} isVisible={this.state.visibleModal} onBackdropPress={() => this.setState({ visibleModal: this.props.footer_searchModal('home') })}>
+            <Modal avoidKeyboard={false} coverScreen={false} style={{}} deviceHeight={height-140} isVisible={this.state.visibleModal} onBackdropPress={() => this.setState({ visibleModal: this.props.footer_searchModal('home') })}>
                 <View style={[Styles.searchModal ]}>
                     <View style={Styles.viewLine}></View>
                     <View style={Styles.inputView}>
@@ -70,8 +70,6 @@ class SearchModal extends Component {
                         </Item>
                         <Image source={require('../../assets/images/gray_search.png')} style={Styles.searchImg} resizeMode={'contain'}/>
                     </View>
-                    {/*<SvgUri width="25" height="25" fill={'#f00'} source={require("../../assets/images/search.svg")} />*/}
-
                     <ScrollView style={{flex:1 , width:'100%' }}>
                         {this.renderSearchResult()}
                     </ScrollView>

@@ -20,7 +20,11 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.aait.fallah"
+    },
+    "android": {
+      "package": "com.aait.fallah"
     },
     "description": ""
   }

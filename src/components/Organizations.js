@@ -39,7 +39,8 @@ class Organizations extends Component {
             isTimePickerVisible: false,
             status:null,
             cities:[],
-            organizations:[]
+            organizations:[],
+            scrollY: 0
         }
     }
 
@@ -174,7 +175,7 @@ class Organizations extends Component {
 
     renderItems = (item) => {
         return(
-            <TouchableOpacity onPress={() => this.props.navigation.navigate('eventDetails', { id: item.id , name :item.title })} style={Styles.eventTouch}>
+            <TouchableOpacity onPress={() => this.props.user ? this.props.navigation.navigate('eventDetails', { id: item.id , name :item.title }) : this.props.navigation.navigate("login") } style={Styles.eventTouch}>
                 <View style={Styles.eventContent}>
                     <Right style={Styles.eventRight}>
                         <Image source={{ uri: item.image }} resizeMode={'cover'} style={Styles.categoryImg}/>
@@ -343,9 +344,9 @@ class Organizations extends Component {
                                         minimumTrackTintColor={'#000'}
                                     />
                                     <View style={Styles.range}>
-                                        <Text style={{ color: '#acabae' }}>{this.state.max}</Text>
-                                        <Text style={{ color: '#acabae' }}>{this.state.value}</Text>
-                                        <Text style={{ color: '#acabae' }}>{this.state.min}</Text>
+										<Left><Text style={{ color: '#acabae' }}>{this.state.min}</Text></Left>
+										<Text style={{ color: '#acabae' }}>{this.state.value}</Text>
+										<Right><Text style={{ color: '#acabae' }}>{this.state.max}</Text></Right>
                                     </View>
                                 </View>
                             </Form>

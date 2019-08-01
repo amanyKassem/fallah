@@ -185,7 +185,7 @@ class Settings extends Component {
                     <View style={[Styles.eventswiper ,  {backgroundColor:'#121320' , height:400}]}>
                         <Image source={require('../../assets/images/bg_color_vectors.png')} style={[Styles.eventswiper , { height: 400 }]} resizeMode={'cover'} />
                         <View style={[Styles.dateHours , {bottom:'55%' , textAlign:'center' , left:0 , paddingHorizontal:15}]}>
-                            <Text style={[Styles.dateText  , {textAlign:'center' , width:'auto'}]}>نص نص نص نص نص نص نص نص نص نص نص نص نص نص نص نص نص نص نص نص نص نص</Text>
+                            {/*<Text style={[Styles.dateText  , {textAlign:'center' , width:'auto'}]}>نص نص نص نص نص نص نص نص نص نص نص نص نص نص نص نص نص نص نص نص نص نص</Text>*/}
                         </View>
                     </View>
 

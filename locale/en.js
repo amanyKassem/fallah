@@ -68,7 +68,10 @@ const en = {
     'codeNotCorrect' : 'code not correct',
     'emailNotCorrect':  'email not correct',
     'searchResult': 'Search result',
-    'noData' : 'no data'
+    'noData' : 'no data',
+	'shareEvent' : 'Share Event',
+	'saves' : 'Saves',
+	'myTickets' : 'My Tickets',
 }
 
 export default en;

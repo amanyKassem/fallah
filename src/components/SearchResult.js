@@ -108,7 +108,7 @@ class SearchResult extends Component {
                     </Left>
                 </Header>
                 <NavigationEvents onWillFocus={payload => this.onFocus(payload)} />
-                <Content style={Styles.content}>
+                <Content contentContainerStyle={{ flexGrow: 1 , top:-1 }} style={Styles.content}>
                     { this.renderLoader() }
                     <View style={Styles.parentView}>
                         <View style={Styles.viewLine}></View>

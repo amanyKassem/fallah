@@ -129,7 +129,7 @@ class GetTicket extends Component {
 
                     <View style={Styles.QR}>
                         <QRCode
-                            value={CONST.domain + 'qr_details' + '/' + this.state.ticket.booking_id}
+                            value={CONST.domain + 'qr_details' + '/' + this.state.ticket.booking_id + '/' + this.props.user.id}
                             size={80}
                             bgColor='#000'
                             fgColor='white'/>
