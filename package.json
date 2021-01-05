@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^9.0.0",
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "ex-react-native-i18n": "0.0.5",
     "expo": "^31.0.2",
     "expo-svg-uri": "^1.0.1",
