@@ -11,7 +11,7 @@
     "@expo/vector-icons": "^9.0.0",
     "axios": "^0.18.0",
     "ex-react-native-i18n": "0.0.5",
-    "expo": "^31.0.2",
+    "expo": "^46.0.14",
     "expo-svg-uri": "^1.0.1",
     "expo-video-player": "^1.2.0",
     "native-base": "^2.12.0",
